@@ -62,6 +62,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	public ImageTargets	mActivity;
 	private Camera		cam;
 	private float		rotate;
+	private boolean		invert;
+	private boolean		showScene	= false;
 
 	/** Native function for initializing the renderer. */
 	public native void initRendering();
@@ -72,6 +74,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	public void updateModelviewMatrix(float mat[]) {
 
 		modelViewMat = mat;
+	}
+
+	public void isTracking(boolean is) {
+		showScene = is;
 	}
 
 	public ImageTargetsRenderer(ImageTargets activity) {
@@ -102,8 +108,11 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (!init) {
 			// Create a texture out of the icon...:-)
-			Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.ic_launcher)), 64, 64));
-			TextureManager.getInstance().addTexture("texture", texture);
+			Texture textureBarco = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.barcot)), 512, 512));
+			TextureManager.getInstance().addTexture("barcot", textureBarco);
+
+			Texture textureVelas = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.velas)), 1024, 1024));
+			TextureManager.getInstance().addTexture("velas", textureVelas);
 
 			world = new World();
 			world.setAmbientLight(20, 20, 20);
@@ -111,11 +120,18 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			sun.setIntensity(250, 250, 250);
 			cube = Primitives.getCube(10);
 			cube.calcTextureWrapSpherical();
-			cube.setTexture("texture");
 			cube.strip();
 			cube.build();
-			sofa = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.sofa), mActivity.getResources().openRawResource(R.raw.sofamat), 1.0f);
+			sofa = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 1.0f);
 
+			sofa[3].setTexture("barcot");
+			sofa[4].setTexture("barcot");
+			sofa[5].setTexture("barcot");
+			sofa[6].setTexture("barcot");
+
+			for (int i = 7; i < 19; i++) {
+				sofa[i].setTexture("velas");
+			}
 			// world.addObject(cube);
 			world.addObjects(sofa);
 
@@ -124,7 +140,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
-			sv.set(cube.getTransformedCenter());
+			sv.set(sofa[0].getTransformedCenter());
 			sv.y -= 10;
 			sv.z -= 10;
 			sun.setPosition(sv);
@@ -180,32 +196,29 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		// Call our native function to render content
 		renderFrame();
 
-		StringBuffer str = new StringBuffer("MATRIX:\n");
-		for (int i = 0; i < 4; i++) {
-			for (int j = 0; j < 4; j++) {
-				str.append("" + modelViewMat[4 * i + j] + " ");
-			}
-			str.append("\n");
-		}
-		DebugLog.LOGD(str.toString());
+		// StringBuffer str = new StringBuffer("MATRIX:\n");
+		// for (int i = 0; i < 4; i++) {
+		// for (int j = 0; j < 4; j++) {
+		// str.append("" + modelViewMat[4 * i + j] + " ");
+		// }
+		// str.append("\n");
+		// }
+		// DebugLog.LOGD(str.toString());
 
-		 com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
-		 mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
+		// com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
+		// mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
 
 		// Esto foi o que engadiu Roi
 		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
-		
 		SimpleVector _cameraPosition = new SimpleVector();
 
-		_cameraPosition.set(modelViewMat[3], modelViewMat[7], modelViewMat[11]); // Collo
-																					// a
-																					// translación
-		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0; // Borro a
-																	// translación
-																	// da matriz
+		_cameraPosition.set(modelViewMat[3], modelViewMat[7], modelViewMat[11]); // Collo a translación
+		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0; // Borro a translación da matriz
 
 		_cameraMatrix.setDump(modelViewMat);
-		//_cameraMatrix = _cameraMatrix.invert();
+		if (invert) {
+			_cameraMatrix = _cameraMatrix.invert();
+		}
 
 		cam.setBack(_cameraMatrix); // Aplico a matriz de rotacións
 		cam.setPosition(_cameraPosition); // Aplico o vector de posición
@@ -213,11 +226,23 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		// cam.setBack(mResult);
 		// setCameraMatrix(modelViewMat);
 		// cube.setRotationMatrix(mResult);
+		for (int i = 0; i < sofa.length; i++) {
+			sofa[i].setRotationPivot(sofa[3].getCenter());
+			sofa[i].rotateAxis(new SimpleVector(1.0, 0.0, 0), (float) 1.570);
+		}
 
 		// fb.clear(back);
-		world.renderScene(fb);
-		world.draw(fb);
-		fb.display();
+		if(showScene){
+			world.renderScene(fb);
+			world.draw(fb);
+			fb.display();
+		}
+
+		for (int i = 0; i < sofa.length; i++) {
+			sofa[i].setRotationPivot(sofa[3].getCenter());
+			sofa[i].rotateAxis(new SimpleVector(1.0, 0.0, 0), (float) -1.570);
+		}
+
 	}
 
 	public float getXpos() {
@@ -250,5 +275,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	public void setYpos(float ypos) {
 		this.ypos = ypos;
+	}
+
+	public void touch() {
+		// invert = !invert;
 	}
 }

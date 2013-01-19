@@ -276,6 +276,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		// Passing the Modelview matrix up to Java
 	jclass activityClass = env->GetObjectClass(obj);
 	jmethodID method = env->GetMethodID(activityClass, "updateModelviewMatrix", "([F)V");
+	jmethodID patternRecognizedMethod = env->GetMethodID(activityClass, "isTracking", "(Z)V");
 
 	jfloatArray modelviewArray = env->NewFloatArray(16);
 
@@ -311,6 +312,9 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	else
 	glFrontFace(GL_CCW);//Back camera
 
+	if(state.getNumTrackableResults()==0){
+		env->CallVoidMethod(obj, patternRecognizedMethod, false);
+	}
 	// Did we find any trackables this frame?
 	for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
 	{
@@ -341,6 +345,10 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		SampleUtils::checkGlError("ImageTargets renderFrame");
 #endif
 
+		
+		env->CallVoidMethod(obj, patternRecognizedMethod, true);
+
+		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
 		// Passing the ModelView matrix up to Java (cont.)
 		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix.data);
 		env->CallVoidMethod(obj, method, modelviewArray);

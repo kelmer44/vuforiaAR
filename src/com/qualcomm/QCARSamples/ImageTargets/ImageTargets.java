@@ -717,20 +717,23 @@ public class ImageTargets extends Activity {
 	public boolean onTouchEvent(MotionEvent me) {
 
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
-        	mRenderer.setXpos(me.getX());
-        	mRenderer.setYpos(me.getY());
+        	/*mRenderer.setXpos(me.getX());
+        	mRenderer.setYpos(me.getY());*/
+        	
+        	
             return true;
         }
 
         if (me.getAction() == MotionEvent.ACTION_UP) {
-        	mRenderer.setXpos(-1);
+        	/*mRenderer.setXpos(-1);
         	mRenderer.setYpos(-1);
         	mRenderer.setTouchTurn(0);
-        	mRenderer.setTouchTurnUp(0);
+        	mRenderer.setTouchTurnUp(0);*/
+        	mRenderer.touch();
             return true;
         }
 
-        if (me.getAction() == MotionEvent.ACTION_MOVE) {
+        /*if (me.getAction() == MotionEvent.ACTION_MOVE) {
             float xd = me.getX() - mRenderer.getXpos();
             float yd = me.getY() - mRenderer.getYpos();
 
@@ -745,7 +748,7 @@ public class ImageTargets extends Activity {
             Thread.sleep(15);
         } catch (Exception e) {
             // No need for this...
-        }
+        }*/
 
         return super.onTouchEvent(me);
     }
