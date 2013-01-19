@@ -41,7 +41,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private RGBColor	back		= new RGBColor(0, 0, 0, 2);
 
 	private Object3D	cube		= null;
-	private Object3D[]	sofa		= null;
+	private Object3D[]	barco		= null;
+	private Object3D[]  torre 		= null;
 	private int			fps			= 0;
 
 	private Light		sun			= null;
@@ -122,25 +123,41 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			cube.calcTextureWrapSpherical();
 			cube.strip();
 			cube.build();
-			sofa = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 1.0f);
+			
 
-			sofa[3].setTexture("barcot");
-			sofa[4].setTexture("barcot");
-			sofa[5].setTexture("barcot");
-			sofa[6].setTexture("barcot");
+			
+			barco = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 1.0f);
+			torre = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 10.0f);
+			
+			
+			for(int i=0;i<barco.length;i++){
+				barco[i].setCulling(Object3D.CULLING_DISABLED);
+				barco[i].build();
+			}	
+			
+			for(int i=0;i<torre.length;i++){
+				torre[i].setCulling(Object3D.CULLING_DISABLED);
+				
+			}
+			
+			
+			barco[3].setTexture("barcot");
+			barco[4].setTexture("barcot");
+			barco[5].setTexture("barcot");
+			barco[6].setTexture("barcot");
 
 			for (int i = 7; i < 19; i++) {
-				sofa[i].setTexture("velas");
+				barco[i].setTexture("velas");
 			}
 			// world.addObject(cube);
-			world.addObjects(sofa);
-
+			//world.addObjects(barco);
+			world.addObjects(torre);
 			cam = world.getCamera();
-			cam.moveCamera(Camera.CAMERA_MOVEOUT, 30);
+			cam.moveCamera(Camera.CAMERA_MOVEOUT, 10);
 			cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
-			sv.set(sofa[0].getTransformedCenter());
+			sv.set(barco[0].getTransformedCenter());
 			sv.y -= 10;
 			sv.z -= 10;
 			sun.setPosition(sv);
@@ -223,12 +240,14 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		cam.setBack(_cameraMatrix); // Aplico a matriz de rotacións
 		cam.setPosition(_cameraPosition); // Aplico o vector de posición
 
+				
+		
 		// cam.setBack(mResult);
 		// setCameraMatrix(modelViewMat);
 		// cube.setRotationMatrix(mResult);
-		for (int i = 0; i < sofa.length; i++) {
-			sofa[i].setRotationPivot(sofa[3].getCenter());
-			sofa[i].rotateAxis(new SimpleVector(1.0, 0.0, 0), (float) 1.570);
+		for (int i = 0; i < barco.length; i++) {
+			barco[i].setRotationPivot(barco[3].getCenter());
+			barco[i].rotateAxis(new SimpleVector(1.0, 0.0, 0), (float) 1.570);
 		}
 
 		// fb.clear(back);
@@ -238,9 +257,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			fb.display();
 		}
 
-		for (int i = 0; i < sofa.length; i++) {
-			sofa[i].setRotationPivot(sofa[3].getCenter());
-			sofa[i].rotateAxis(new SimpleVector(1.0, 0.0, 0), (float) -1.570);
+		for (int i = 0; i < barco.length; i++) {
+			barco[i].setRotationPivot(barco[3].getCenter());
+			barco[i].rotateAxis(new SimpleVector(1.0, 0.0, 0), (float) -1.570);
 		}
 
 	}
@@ -278,6 +297,13 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void touch() {
-		// invert = !invert;
+//		invert = !invert;
+//
+//		for(int i=0;i<barco.length;i++){
+//			barco[i].setVisibility(invert);
+//		}
+//		for(int i=0;i<torre.length;i++){
+//			torre[i].setVisibility(!invert);
+//		}
 	}
 }
