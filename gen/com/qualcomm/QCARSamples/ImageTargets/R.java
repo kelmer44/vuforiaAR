@@ -25,10 +25,12 @@ public final class R {
     }
     public static final class drawable {
         public static final int activity_splash_logo=0x7f020000;
-        public static final int blueprint_vuforia=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
-        public static final int splash_background_tile=0x7f020003;
-        public static final int tiled_background=0x7f020004;
+        public static final int barcot=0x7f020001;
+        public static final int blueprint_vuforia=0x7f020002;
+        public static final int ic_launcher=0x7f020003;
+        public static final int splash_background_tile=0x7f020004;
+        public static final int tiled_background=0x7f020005;
+        public static final int velas=0x7f020006;
     }
     public static final class id {
         public static final int about_text=0x7f090000;
@@ -46,8 +48,11 @@ public final class R {
         public static final int splash_screen=0x7f030002;
     }
     public static final class raw {
-        public static final int sofa=0x7f040000;
-        public static final int sofamat=0x7f040001;
+        public static final int barco=0x7f040000;
+        public static final int barcomat=0x7f040001;
+        public static final int sofa=0x7f040002;
+        public static final int sofamat=0x7f040003;
+        public static final int velas=0x7f040004;
     }
     public static final class string {
         public static final int about_text=0x7f070005;
