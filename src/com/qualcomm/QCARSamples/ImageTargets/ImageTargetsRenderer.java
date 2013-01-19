@@ -140,6 +140,29 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	/** The native render function. */
 	public native void renderFrame();
 
+	public boolean setCameraMatrix(float[] matrix){
+		
+		if (cam != null){
+			
+			com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();;
+			SimpleVector _cameraPosition = new SimpleVector();
+			
+			_cameraPosition.set(matrix[12],matrix[13],matrix[14]);
+			matrix[12] = matrix[13] = matrix[14] = 0;
+			
+			_cameraMatrix.setDump(matrix);
+			//_cameraMatrix = _cameraMatrix.invert();
+			
+			cam.setBack(_cameraMatrix);
+			cam.setPosition(_cameraPosition);
+
+			return true;
+
+		} else {
+			return false;
+		}
+
+	}
 	/** Called to draw the current frame. */
 	public void onDrawFrame(GL10 gl) {
 
@@ -161,14 +184,33 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		}
 		DebugLog.LOGD(str.toString());
 		
-		com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
-		mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
+		//com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
+		//mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
+		
+		//Esto foi o que engadiu Roi
+		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();;
+		SimpleVector _cameraPosition = new SimpleVector();
+		
+		_cameraPosition.set(modelViewMat[3],modelViewMat[7],modelViewMat[11]); 	//Collo a translación
+		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0;				//Borro a translación da matriz
+		
+		_cameraMatrix.setDump(modelViewMat);	
+		//_cameraMatrix = _cameraMatrix.invert();
+		
+		cam.setBack(_cameraMatrix);			//Aplico a matriz de rotacións
+		cam.setPosition(_cameraPosition);	//Aplico o vector de posición
+		
 		//cam.setBack(mResult);
-		cube.setRotationMatrix(mResult);
+		//setCameraMatrix(modelViewMat);
+		//cube.setRotationMatrix(mResult);
+		
+		cube.rotateAxis(new SimpleVector(1.0,0.0,0),(float)1.570);	//Rotamos o cubo para que apareza sobre o patrón
+		
 		// fb.clear(back);
 		world.renderScene(fb);
 		world.draw(fb);
 		fb.display();
+		cube.rotateAxis(new SimpleVector(1.0,0.0,0),(float)-1.570);	//Rotamos á inversa o cubo para que non estea xirando permanentemente (como un pop_Matrix)
 	}
 
 	public float getXpos() {
