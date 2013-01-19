@@ -22,6 +22,7 @@ import com.qualcomm.QCAR.QCAR;
 import com.threed.jpct.Camera;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
+import com.threed.jpct.Loader;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
 import com.threed.jpct.RGBColor;
@@ -40,6 +41,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private RGBColor	back		= new RGBColor(0, 0, 0, 2);
 
 	private Object3D	cube		= null;
+	private Object3D[]	sofa		= null;
 	private int			fps			= 0;
 
 	private Light		sun			= null;
@@ -59,7 +61,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	/** Reference to main activity **/
 	public ImageTargets	mActivity;
 	private Camera		cam;
-	private float	rotate;
+	private float		rotate;
 
 	/** Native function for initializing the renderer. */
 	public native void initRendering();
@@ -99,9 +101,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		fb = new FrameBuffer(width, height);
 
 		if (!init) {
-			 // Create a texture out of the icon...:-)
-            Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.ic_launcher)), 64, 64));
-            TextureManager.getInstance().addTexture("texture", texture);
+			// Create a texture out of the icon...:-)
+			Texture texture = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.ic_launcher)), 64, 64));
+			TextureManager.getInstance().addTexture("texture", texture);
 
 			world = new World();
 			world.setAmbientLight(20, 20, 20);
@@ -112,8 +114,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			cube.setTexture("texture");
 			cube.strip();
 			cube.build();
+			sofa = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.sofa), mActivity.getResources().openRawResource(R.raw.sofamat), 1.0f);
 
-			world.addObject(cube);
+			// world.addObject(cube);
+			world.addObjects(sofa);
 
 			cam = world.getCamera();
 			cam.moveCamera(Camera.CAMERA_MOVEOUT, 30);
@@ -121,8 +125,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 			SimpleVector sv = new SimpleVector();
 			sv.set(cube.getTransformedCenter());
-			sv.y -= 100;
-			sv.z -= 100;
+			sv.y -= 10;
+			sv.z -= 10;
 			sun.setPosition(sv);
 			MemoryHelper.compact();
 
@@ -140,19 +144,20 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	/** The native render function. */
 	public native void renderFrame();
 
-	public boolean setCameraMatrix(float[] matrix){
-		
-		if (cam != null){
-			
-			com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();;
+	public boolean setCameraMatrix(float[] matrix) {
+
+		if (cam != null) {
+
+			com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
+			;
 			SimpleVector _cameraPosition = new SimpleVector();
-			
-			_cameraPosition.set(matrix[12],matrix[13],matrix[14]);
+
+			_cameraPosition.set(matrix[12], matrix[13], matrix[14]);
 			matrix[12] = matrix[13] = matrix[14] = 0;
-			
+
 			_cameraMatrix.setDump(matrix);
-			//_cameraMatrix = _cameraMatrix.invert();
-			
+			// _cameraMatrix = _cameraMatrix.invert();
+
 			cam.setBack(_cameraMatrix);
 			cam.setPosition(_cameraPosition);
 
@@ -163,6 +168,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		}
 
 	}
+
 	/** Called to draw the current frame. */
 	public void onDrawFrame(GL10 gl) {
 
@@ -174,7 +180,6 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		// Call our native function to render content
 		renderFrame();
 
-		
 		StringBuffer str = new StringBuffer("MATRIX:\n");
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 4; j++) {
@@ -183,34 +188,36 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			str.append("\n");
 		}
 		DebugLog.LOGD(str.toString());
-		
-		//com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
-		//mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
-		
-		//Esto foi o que engadiu Roi
-		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();;
+
+		// com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
+		// mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
+
+		// Esto foi o que engadiu Roi
+		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
+		;
 		SimpleVector _cameraPosition = new SimpleVector();
-		
-		_cameraPosition.set(modelViewMat[3],modelViewMat[7],modelViewMat[11]); 	//Collo a translación
-		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0;				//Borro a translación da matriz
-		
-		_cameraMatrix.setDump(modelViewMat);	
-		//_cameraMatrix = _cameraMatrix.invert();
-		
-		cam.setBack(_cameraMatrix);			//Aplico a matriz de rotacións
-		cam.setPosition(_cameraPosition);	//Aplico o vector de posición
-		
-		//cam.setBack(mResult);
-		//setCameraMatrix(modelViewMat);
-		//cube.setRotationMatrix(mResult);
-		
-		cube.rotateAxis(new SimpleVector(1.0,0.0,0),(float)1.570);	//Rotamos o cubo para que apareza sobre o patrón
-		
+
+		_cameraPosition.set(modelViewMat[3], modelViewMat[7], modelViewMat[11]); // Collo
+																					// a
+																					// translación
+		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0; // Borro a
+																	// translación
+																	// da matriz
+
+		_cameraMatrix.setDump(modelViewMat);
+		// _cameraMatrix = _cameraMatrix.invert();
+
+		cam.setBack(_cameraMatrix); // Aplico a matriz de rotacións
+		cam.setPosition(_cameraPosition); // Aplico o vector de posición
+
+		// cam.setBack(mResult);
+		// setCameraMatrix(modelViewMat);
+		// cube.setRotationMatrix(mResult);
+
 		// fb.clear(back);
 		world.renderScene(fb);
 		world.draw(fb);
 		fb.display();
-		cube.rotateAxis(new SimpleVector(1.0,0.0,0),(float)-1.570);	//Rotamos á inversa o cubo para que non estea xirando permanentemente (como un pop_Matrix)
 	}
 
 	public float getXpos() {
