@@ -189,12 +189,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		}
 		DebugLog.LOGD(str.toString());
 
-		// com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
-		// mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
+		 com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
+		 mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
 
 		// Esto foi o que engadiu Roi
 		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
-		;
+		
 		SimpleVector _cameraPosition = new SimpleVector();
 
 		_cameraPosition.set(modelViewMat[3], modelViewMat[7], modelViewMat[11]); // Collo
@@ -205,7 +205,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 																	// da matriz
 
 		_cameraMatrix.setDump(modelViewMat);
-		// _cameraMatrix = _cameraMatrix.invert();
+		//_cameraMatrix = _cameraMatrix.invert();
 
 		cam.setBack(_cameraMatrix); // Aplico a matriz de rotacións
 		cam.setPosition(_cameraPosition); // Aplico o vector de posición
