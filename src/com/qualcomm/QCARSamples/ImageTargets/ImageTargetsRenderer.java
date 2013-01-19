@@ -124,10 +124,19 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			cube.strip();
 			cube.build();
 			
-			
+
 			
 			barco = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 1.0f);
 			torre = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 10.0f);
+			
+			
+			for(int i=0;i<barco.length;i++){
+				barco[i].setCulling(Object3D.CULLING_DISABLED);
+			}	
+			for(int i=0;i<torre.length;i++){
+				torre[i].setCulling(Object3D.CULLING_DISABLED);
+			}
+			
 			
 			barco[3].setTexture("barcot");
 			barco[4].setTexture("barcot");
@@ -138,7 +147,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 				barco[i].setTexture("velas");
 			}
 			// world.addObject(cube);
-			world.addObjects(barco);
+			//world.addObjects(barco);
 			world.addObjects(torre);
 			cam = world.getCamera();
 			cam.moveCamera(Camera.CAMERA_MOVEOUT, 30);
@@ -285,13 +294,13 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void touch() {
-		invert = !invert;
-
-		for(int i=0;i<barco.length;i++){
-			barco[i].setVisibility(invert);
-		}
-		for(int i=0;i<torre.length;i++){
-			torre[i].setVisibility(!invert);
-		}
+//		invert = !invert;
+//
+//		for(int i=0;i<barco.length;i++){
+//			barco[i].setVisibility(invert);
+//		}
+//		for(int i=0;i<torre.length;i++){
+//			torre[i].setVisibility(!invert);
+//		}
 	}
 }
