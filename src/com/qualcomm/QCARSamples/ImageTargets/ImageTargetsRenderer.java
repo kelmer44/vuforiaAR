@@ -132,9 +132,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			
 			for(int i=0;i<barco.length;i++){
 				barco[i].setCulling(Object3D.CULLING_DISABLED);
+				barco[i].build();
 			}	
+			
 			for(int i=0;i<torre.length;i++){
 				torre[i].setCulling(Object3D.CULLING_DISABLED);
+				
 			}
 			
 			
@@ -150,7 +153,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			//world.addObjects(barco);
 			world.addObjects(torre);
 			cam = world.getCamera();
-			cam.moveCamera(Camera.CAMERA_MOVEOUT, 30);
+			cam.moveCamera(Camera.CAMERA_MOVEOUT, 10);
 			cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
