@@ -341,6 +341,8 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		SampleUtils::checkGlError("ImageTargets renderFrame");
 #endif
 
+
+		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
 		// Passing the ModelView matrix up to Java (cont.)
 		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix.data);
 		env->CallVoidMethod(obj, method, modelviewArray);

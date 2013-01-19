@@ -124,7 +124,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
-			sv.set(cube.getTransformedCenter());
+			sv.set(sofa[0].getTransformedCenter());
 			sv.y -= 10;
 			sv.z -= 10;
 			sun.setPosition(sv);
@@ -194,7 +194,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		// Esto foi o que engadiu Roi
 		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
-		;
+		/*;
 		SimpleVector _cameraPosition = new SimpleVector();
 
 		_cameraPosition.set(modelViewMat[3], modelViewMat[7], modelViewMat[11]); // Collo
@@ -203,21 +203,32 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0; // Borro a
 																	// translación
 																	// da matriz
-
+*/
 		_cameraMatrix.setDump(modelViewMat);
 		// _cameraMatrix = _cameraMatrix.invert();
 
 		cam.setBack(_cameraMatrix); // Aplico a matriz de rotacións
-		cam.setPosition(_cameraPosition); // Aplico o vector de posición
+		//cam.setPosition(_cameraPosition); // Aplico o vector de posición
 
+		
 		// cam.setBack(mResult);
 		// setCameraMatrix(modelViewMat);
 		// cube.setRotationMatrix(mResult);
+		for(int i = 0; i< sofa.length; i++){
+			sofa[i].setRotationPivot(sofa[0].getCenter());
+			sofa[i].rotateAxis(new SimpleVector(1.0,0.0,0),(float)1.570);	//Rotamos o cubo para que apareza sobre o patrón
+		}
 
-		// fb.clear(back);
+	// fb.clear(back);
 		world.renderScene(fb);
 		world.draw(fb);
 		fb.display();
+		
+		for(int i = 0; i< sofa.length; i++){
+			sofa[i].setRotationPivot(sofa[0].getCenter());
+			sofa[i] .rotateAxis(new SimpleVector(1.0,0.0,0),(float)-1.570);	//Rotamos á inversa o cubo para que non estea xirando permanentemente (como un pop_Matrix)
+		}
+		
 	}
 
 	public float getXpos() {
