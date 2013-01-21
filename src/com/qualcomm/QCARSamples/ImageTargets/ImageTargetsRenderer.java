@@ -24,7 +24,6 @@ import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
 import com.threed.jpct.Object3D;
-import com.threed.jpct.Primitives;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
@@ -38,7 +37,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private FrameBuffer	fb			= null;
 	private World		world		= null;
 
-	private RGBColor	back		= new RGBColor(0, 0, 0, 2);
+	private RGBColor	back		= new RGBColor(0, 0, 0, 255);
 
 	private Object3D	cube		= null;
 	private Object3D	barco		= null;
@@ -58,6 +57,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private boolean		init		= false;
 
 	private float		modelViewMat[];
+	private float		projectionMatrix[];
 
 	/** Reference to main activity **/
 	public ImageTargets	mActivity;
@@ -65,6 +65,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private float		rotate;
 	private boolean		invert;
 	private boolean		showScene	= false;
+	private float		fov;
+	private int			screenWidth;
+	private int			screenHeight;
+	private float		prevyfov;
+
+	private Texture		font		= null;
 
 	/** Native function for initializing the renderer. */
 	public native void initRendering();
@@ -77,14 +83,24 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		modelViewMat = mat;
 	}
 
+	public void updateProjMatrix(float mat[]) {
+
+		projectionMatrix = mat;
+	}
+
 	public void isTracking(boolean is) {
 		showScene = is;
+	}
+
+	public void setFov(float fov) {
+		this.fov = fov;
 	}
 
 	public ImageTargetsRenderer(ImageTargets activity) {
 
 		this.mActivity = activity;
 		modelViewMat = new float[16];
+		projectionMatrix = new float[16];
 	}
 
 	/** Called when the surface is created or recreated. */
@@ -99,13 +115,15 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		QCAR.onSurfaceCreated();
 	}
 
+	
 	/** Called when the surface changed size. */
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		DebugLog.LOGD("GLRenderer::onSurfaceChanged");
 		if (fb != null) {
 			fb.dispose();
 		}
-		fb = new FrameBuffer(width, height);
+		// fb = new FrameBuffer(gl, width,height);
+		fb = new FrameBuffer(640, 480);
 
 		if (!init) {
 			// Create a texture out of the icon...:-)
@@ -119,21 +137,30 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			world.setAmbientLight(20, 20, 20);
 			sun = new Light(world);
 			sun.setIntensity(250, 250, 250);
-			cube = Primitives.getCube(10);
-			cube.calcTextureWrapSpherical();
-			cube.strip();
-			cube.build();
+			// cube = Primitives.getCube(10);
+			// cube.calcTextureWrapSpherical();
+			// cube.strip();
+			// cube.build();
+			font = new Texture(mActivity.getResources().openRawResource(R.raw.numbers));
+			font.setMipmap(false);
 
-			barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 1.0f));
-			//torre = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 10.0f);
-
+			barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 2.0f));
 			
-			// world.addObject(cube);
+			// barco.setTransparency(-1);
+			// barco =
+			// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.vance),
+			// mActivity.getResources().openRawResource(R.raw.vancemat), 1.0f));
+			// torre =
+			// Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola),
+			// mActivity.getResources().openRawResource(R.raw.torremat), 10.0f);
+
+			// barco.rotateX(1.5f);
 			world.addObject(barco);
-			// world.addObjects(torre);
+			barco.setOrigin(new SimpleVector(0, 0, 0));
+			// world.addObjects(torre);io8 
 			cam = world.getCamera();
-			cam.moveCamera(Camera.CAMERA_MOVEOUT, 10);
-			cam.lookAt(cube.getTransformedCenter());
+			// cam.moveCamera(Camera.CAMERA_MOVEOUT, 10);
+			// cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
 			sv.set(barco.getTransformedCenter());
@@ -156,28 +183,31 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	/** The native render function. */
 	public native void renderFrame();
 
-	public boolean setCameraMatrix(float[] matrix) {
+	public void setCameraMatrix(float[] modelViewMatrixFromVuforia) {
 
-		if (cam != null) {
+		float x = modelViewMatrixFromVuforia[12];
+		float y = modelViewMatrixFromVuforia[13];
+		float z = modelViewMatrixFromVuforia[14];
 
-			com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
-			;
-			SimpleVector _cameraPosition = new SimpleVector();
+		// StringBuffer str = new StringBuffer("MATRIX:\n");
+		// for (int i = 0; i < 4; i++) {
+		// for (int j = 0; j < 4; j++) {
+		// str.append("" + modelViewMatrixFromVuforia[4 * i + j] + " ");
+		// }
+		// str.append("\n");
+		// }
+		// DebugLog.LOGD(str.toString());
+		//
+		// DebugLog.LOGD("Translate: " + x + ", " + y + "," + z);
 
-			_cameraPosition.set(matrix[12], matrix[13], matrix[14]);
-			matrix[12] = matrix[13] = matrix[14] = 0;
+		com.threed.jpct.Matrix mModelView = new com.threed.jpct.Matrix();
 
-			_cameraMatrix.setDump(matrix);
-			// _cameraMatrix = _cameraMatrix.invert();
+		mModelView.setDump(modelViewMatrixFromVuforia);
 
-			cam.setBack(_cameraMatrix);
-			cam.setPosition(_cameraPosition);
-
-			return true;
-
-		} else {
-			return false;
-		}
+		// cameraMatrix = cameraMatrix.invert();
+		// barco.setOrigin(new SimpleVector(x, y, z));
+		// cam.setPosition(-x,-y,-z);
+		cam.setBack(mModelView);
 
 	}
 
@@ -192,47 +222,19 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		// Call our native function to render content
 		renderFrame();
 
-		// StringBuffer str = new StringBuffer("MATRIX:\n");
-		// for (int i = 0; i < 4; i++) {
-		// for (int j = 0; j < 4; j++) {
-		// str.append("" + modelViewMat[4 * i + j] + " ");
-		// }
-		// str.append("\n");
-		// }
-		// DebugLog.LOGD(str.toString());
+		setCameraMatrix(modelViewMat);
 
-		// com.threed.jpct.Matrix mResult = new com.threed.jpct.Matrix();
-		// mResult.setDump(modelViewMat); // modelviewMatrix i get from Qcar
-
-		// Esto foi o que engadiu Roi
-		com.threed.jpct.Matrix _cameraMatrix = new com.threed.jpct.Matrix();
-
-		com.threed.jpct.Matrix anotherMatrix = new com.threed.jpct.Matrix();
-		
-		SimpleVector _cameraPosition = new SimpleVector();
-
-		_cameraPosition.set(modelViewMat[3], modelViewMat[7], modelViewMat[11]); // Collo
-																					// a
-																					// translación
-		modelViewMat[3] = modelViewMat[7] = modelViewMat[11] = 0; // Borro a
-																	// translación
-																	// da matriz
-
-		_cameraMatrix.setDump(modelViewMat);
-		
-		cam.setBack(_cameraMatrix); // Aplico a matriz de rotacións
-		cam.setPosition(_cameraPosition); // Aplico o vector de posición
-
-//		_cameraMatrix.invert();
-//		barco.setRotationMatrix(_cameraMatrix);
-//		barco.setOrigin(_cameraPosition);
 		
 		if (showScene) {
-			world.renderScene(fb);
-			world.draw(fb);
+			//fb.clear(back);
+				world.renderScene(fb);
+				world.draw(fb);
+				
+				DebugLog.LOGD("Barco: " + barco.getTranslation().x + ", " + barco.getTranslation().y + ", " + barco.getTranslation().z);
+
+				DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " + cam.getPosition().y + ", " + cam.getPosition().z);
 			fb.display();
 		}
-
 
 	}
 
@@ -269,7 +271,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void touch() {
-		// invert = !invert;
+		invert = !invert;
 		//
 		// for(int i=0;i<barco.length;i++){
 		// barco[i].setVisibility(invert);

@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <math.h>
 
 #ifdef USE_OPENGL_ES_1_1
 #include <GLES/gl.h>
@@ -272,13 +273,23 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_o
 JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRenderer_renderFrame(JNIEnv *env, jobject obj)
 {
 	//LOG("Java_com_qualcomm_QCARSamples_ImageTargets_GLRenderer_renderFrame");
-	
+	const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
+	QCAR::Vec2F size = cameraCalibration.getSize();
+	QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
+	float fovRadians = 2 * atan(0.5f * size.data[1] / focalLength.data[1]);
+	float fovDegrees = fovRadians * 180.0f / M_PI;
+
 		// Passing the Modelview matrix up to Java
 	jclass activityClass = env->GetObjectClass(obj);
 	jmethodID method = env->GetMethodID(activityClass, "updateModelviewMatrix", "([F)V");
+	jmethodID projMatMethod = env->GetMethodID(activityClass, "updateProjMatrix", "([F)V");
 	jmethodID patternRecognizedMethod = env->GetMethodID(activityClass, "isTracking", "(Z)V");
+	jmethodID fovMethod = env->GetMethodID(activityClass, "setFov", "(F)V");
+	env->CallVoidMethod(obj, fovMethod, fovRadians);
 
+	//LOG("SIZE: w: %f, h: %f, fov: %f", size.data[0], size.data[1], fovRadians);
 	jfloatArray modelviewArray = env->NewFloatArray(16);
+	jfloatArray projectionArray = env->NewFloatArray(16);
 
 	// Clear color and depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -323,6 +334,11 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		const QCAR::Trackable& trackable = result->getTrackable();
 		QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
+
+
+
+
+
 #ifdef USE_OPENGL_ES_1_1
 		// Load projection matrix:
 		glMatrixMode(GL_PROJECTION);
@@ -344,14 +360,17 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 
 		SampleUtils::checkGlError("ImageTargets renderFrame");
 #endif
-
-		
 		env->CallVoidMethod(obj, patternRecognizedMethod, true);
 
-		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
+		QCAR::Matrix44F modelViewMatrix2 = QCAR::Tool::convertPose2GLMatrix(result->getPose());
+		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix2.data[0]);
+
+		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &projectionMatrix.data[0]);
 		// Passing the ModelView matrix up to Java (cont.)
-		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix.data);
+		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix2.data);
+		env->SetFloatArrayRegion(projectionArray, 0, 16, projectionMatrix.data);
 		env->CallVoidMethod(obj, method, modelviewArray);
+		env->CallVoidMethod(obj, projMatMethod, projectionArray);
 	}
 	
 	env->DeleteLocalRef(modelviewArray);
@@ -452,7 +471,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_d
 	}
 }
 
-JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_startCamera(JNIEnv *, jobject)
+JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_startCamera(JNIEnv *env, jobject obj)
 {
 	LOG("Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_startCamera");
 
@@ -471,6 +490,12 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_s
 	if (!QCAR::CameraDevice::getInstance().selectVideoMode(
 					QCAR::CameraDevice::MODE_DEFAULT))
 	return;
+	QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
+	jclass activityClass = env->GetObjectClass(obj);
+	jmethodID sceensizeMethod = env->GetMethodID(activityClass, "setSize", "(FF)V");
+
+	env->CallVoidMethod(obj, sceensizeMethod, config.mSize.data[0], config.mSize.data[1]);
+
 
 	// Start the camera:
 	if (!QCAR::CameraDevice::getInstance().start())

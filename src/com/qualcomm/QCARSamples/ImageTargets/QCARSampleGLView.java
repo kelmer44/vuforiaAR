@@ -6,8 +6,6 @@
 
 package com.qualcomm.QCARSamples.ImageTargets;
 
-import com.qualcomm.QCAR.QCAR;
-
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.egl.EGLContext;
@@ -16,6 +14,8 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+
+import com.qualcomm.QCAR.QCAR;
 
 /**
  * QCARSampleGLView is a support class for the QCAR samples applications.
@@ -37,7 +37,6 @@ public class QCARSampleGLView extends GLSurfaceView {
 
 		// Extract OpenGL ES version from flags
 		mUseOpenGLES2 = (flags & QCAR.GL_20) != 0;
-
 		// By default, GLSurfaceView() creates a RGB_565 opaque surface.
 		// If we want a translucent one, we should change the surface's
 		// format here, using PixelFormat.TRANSLUCENT for GL Surfaces
@@ -59,9 +58,7 @@ public class QCARSampleGLView extends GLSurfaceView {
 		// custom config chooser. See ConfigChooser class definition
 		// below.
 		setEGLConfigChooser(translucent ? new ConfigChooser(8, 8, 8, 8, depth, stencil) : new ConfigChooser(5, 6, 5, 0, depth, stencil));
-		/*setEGLConfigChooser(new ConfigChooser(8, 8, 8, 8, depth, stencil));
-		this.getHolder().setFormat(PixelFormat.TRANSLUCENT);*/
-
+		//setEGLConfigChooser(5,6,5,0,16,0);
 	}
 
 	/** Creates OpenGL contexts. */

@@ -11,6 +11,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,7 +71,7 @@ public class ImageTargets extends Activity {
 	// The textures we will use for rendering:
 	private Vector<Texture>			mTextures;
 
-	private QCARSampleGLView		mGlView;
+	private GLSurfaceView		mGlView;
 	private ImageTargetsRenderer	mRenderer						= null;
 
 	// Display size of the device:
@@ -91,6 +92,8 @@ public class ImageTargets extends Activity {
 	private boolean					mContAutofocus					= false;
 
 	private Handler					loadingDialogHandler			= new LoadingDialogHandler(this);
+	private int	camWidth;
+	private int	camHeight;
 
 	/** Static initializer block to load native libraries on start-up. */
 	static {
@@ -98,6 +101,13 @@ public class ImageTargets extends Activity {
 		loadLibrary(NATIVE_LIB_SAMPLE);
 	}
 
+	
+	public void setSize(float w, float h){
+		this.camWidth = (int) Math.ceil(w);
+		this.camHeight = (int) Math.ceil(h);
+		DebugLog.LOGD("w:" + this.camWidth + ", h: " + this.camHeight);
+	}
+	
 	/**
 	 * Creates a handler to update the status of the Loading Dialog from an UI
 	 * Thread
@@ -653,18 +663,17 @@ public class ImageTargets extends Activity {
 		// Create OpenGL ES view:
 		int depthSize = 16;
 		int stencilSize = 0;
-		boolean translucent = true; //QCAR.requiresAlpha();
+		boolean translucent = QCAR.requiresAlpha();
 
-		mGlView = new QCARSampleGLView(this);
-
-		mGlView.init(mQCARFlags, translucent, depthSize, stencilSize);
-
-		//mGlView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		//mGlView = new QCARSampleGLView(this);
+		mGlView = new GLSurfaceView(this.getApplication());
+		//mGlView.init(mQCARFlags, translucent, depthSize, stencilSize);
+		mGlView.setEGLContextClientVersion(2);
+		mGlView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		
 		mRenderer = new ImageTargetsRenderer(this);
 		mGlView.setRenderer(mRenderer);
 		// setContentView(mGlView);
-
 		LayoutInflater inflater = LayoutInflater.from(this);
 		mUILayout = (RelativeLayout) inflater.inflate(R.layout.camera_overlay, null, false);
 
