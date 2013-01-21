@@ -3,49 +3,28 @@ illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd telladocasita.tif
+map_Kd telladocasita.jpg
 Ni 1.00
 newmtl ChanBaseTorre1SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd 5rayasescaleiras.tif
-Ni 1.00
-newmtl ChanForaSG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd suelomurodeforaB.tif
+map_Kd rayasescaleiras.jpg
 Ni 1.00
 newmtl ChanIntMSG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd suelo.tif
-Ni 1.00
-newmtl ChanServMSG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd rampaservicios.tif
-Ni 1.00
-newmtl EscaleirasInt_TeitoBSG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd 3lineas2.tif
+map_Kd suelo.jpg
 Ni 1.00
 newmtl PlacaEntradaASG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd placa.tif
+map_Kd placa.jpg
 Ni 1.00
 Ks 0.09 0.09 0.09
 newmtl PlacaEntradaBSG
@@ -53,7 +32,7 @@ illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd placa3.tif
+map_Kd placa3.jpg
 Ni 1.00
 Ks 0.09 0.09 0.09
 newmtl PortaEntradaBSG
@@ -61,50 +40,15 @@ illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd portaentrada2.tif
+map_Kd portaentrada2.jpg
 Ni 1.00
 Ks 0.09 0.09 0.09
-newmtl PortaServM1SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd portaservicios2.tif
-Ni 1.00
-newmtl PortaServM2SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd ventanaalargada.tif
-Ni 1.00
-newmtl PortaServMSG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd portaservicios.tif
-Ni 1.00
-newmtl VentanaReixaServMSG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd ventanarejas.tif
-Ni 1.00
-newmtl VentanalServMSG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd ventanalesservicio.tif
-Ni 1.00
 newmtl blinn4SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd portaentrada1.tif
+map_Kd portaentrada1.jpg
 Ni 1.00
 Ks 0.09 0.09 0.09
 newmtl lambert18SG
@@ -114,103 +58,54 @@ Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 map_Kd murofachada2b.jpg
 Ni 1.00
-newmtl lambert21SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd pedrascontodo.tif
-Ni 1.00
 newmtl lambert23SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd sueloentrada.tif
+map_Kd sueloentrada.jpg
 Ni 1.00
 newmtl lambert24SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd muroforaretocado.tif
+map_Kd muroforaretocado.jpg
 Ni 1.00
 newmtl lambert25SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd frontalescaleiras2.tif
+map_Kd frontalescaleiras2.jpg
 Ni 1.00
 newmtl lambert29SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd casita1.tif
+map_Kd casita1.jpg
 Ni 1.00
 newmtl lambert30SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd lateralcasita.tif
+map_Kd lateralcasita.jpg
 Ni 1.00
-newmtl lambert32SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd pedrasdiante.tif
-Ni 1.00
-newmtl lambert33SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd solopedras.tif
-Ni 1.00
-newmtl lambert38SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd muroserviciossinmanchas.tif
-Ni 1.00
-newmtl lambert39SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd portal.tif
-Ni 1.00
-newmtl lambert40SG
-illum 4
-Kd 0.00 0.00 0.00
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-map_Kd grass01.jpg
-Ni 1.00
-newmtl lambert41SG
-illum 4
-Kd 0.59 0.63 0.69
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-Ks 0.50 0.50 0.50
 newmtl lambert42SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd cristalescupula.tif
+map_Kd cristalescupula.jpg
 Ni 1.00
 newmtl lambert44SG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd paredeInt03.tif
+map_Kd paredeInt03.jpg
 Ni 1.00
 newmtl lambert48SG
 illum 4
@@ -224,23 +119,40 @@ Kd 0.50 0.50 0.50
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
-newmtl lambert61SG
-illum 4
-Kd 0.37 0.37 0.37
-Ka 0.00 0.00 0.00
-Tf 1.00 1.00 1.00
-Ni 1.00
-newmtl lambert67SG
+newmtl pasted__ChanIntMSG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd pivoteconluz.tif
+map_Kd suelo.jpg
 Ni 1.00
-newmtl lambert68SG
+newmtl pasted__PlacaEntradaASG
 illum 4
 Kd 0.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
-map_Kd pivote2.tif
+map_Kd placa.jpg
+Ni 1.00
+Ks 0.09 0.09 0.09
+newmtl pasted__PlacaEntradaBSG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd placa3.jpg
+Ni 1.00
+Ks 0.09 0.09 0.09
+newmtl pasted__lambert18SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd murofachada2b.jpg
+Ni 1.00
+newmtl pasted__lambert44SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd paredeInt03.jpg
 Ni 1.00

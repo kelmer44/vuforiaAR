@@ -95,10 +95,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void setFov(float fov) {
+		DebugLog.LOGD("FOV: " + fov);
 		this.fov = fov;
 	}
 
 	public void setFovy(float fov) {
+		DebugLog.LOGD("FOVY: " + fovy);
 		this.fovy = fov;
 	}
 	
@@ -130,7 +132,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			fb.dispose();
 		}
 		// fb = new FrameBuffer(gl, width,height);
-		fb = new FrameBuffer(1196, 720);
+		fb = new FrameBuffer(1196, 897);
 		
 		// Call native function to update rendering when render surface
 		// parameters have changed:
@@ -141,45 +143,103 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (!init) {
 			// Create a texture out of the icon...:-)
-			Texture textureBarco = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.barcot)), 512, 512));
-			TextureManager.getInstance().addTexture("barcot.jpg", textureBarco);
+//			Texture textureBarco = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.barcot)), 512, 512));
+//			TextureManager.getInstance().addTexture("barcot.jpg", textureBarco);
+//
+//			Texture textureVelas = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.velas)), 1024, 1024));
+//			TextureManager.getInstance().addTexture("velas.jpg", textureVelas);
+			Texture[]		textures;
+			Texture.defaultTo4bpp(true);
+			textures = new Texture[15];
+			textures[0] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.murofachada2b)));
+			textures[0].enable4bpp(true);
+			textures[0].compress();
+			TextureManager.getInstance().addTexture("murofachada2b.jpg", textures[0]);
 
-			Texture textureVelas = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.velas)), 1024, 1024));
-			TextureManager.getInstance().addTexture("velas.jpg", textureVelas);
+			textures[1] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.rayasescaleiras)));
+			textures[1].compress();
+			TextureManager.getInstance().addTexture("rayasescaleiras.jpg", textures[1]);
+
+			textures[2] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.suelo)));
+			textures[2].compress();
+			TextureManager.getInstance().addTexture("suelo.jpg", textures[2]);
+
+			textures[3] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.casita1)));
+			textures[3].compress();
+			TextureManager.getInstance().addTexture("casita1.jpg", textures[3]);
+
+			textures[4] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.cristalescupula)));
+			textures[4].compress();
+			TextureManager.getInstance().addTexture("cristalescupula.jpg", textures[4]);
+			
+			textures[5] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.frontalescaleiras2)));
+			textures[5].compress();
+			TextureManager.getInstance().addTexture("frontalescaleiras2.jpg", textures[5]);	
+		
+			textures[6] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.lateralcasita)));
+			textures[6].compress();
+			TextureManager.getInstance().addTexture("lateralcasita.jpg", textures[6]);	
+			
+			textures[7] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.muroforaretocado)));
+			textures[7].compress();
+			TextureManager.getInstance().addTexture("muroforaretocado.jpg", textures[7]);	
+			
+			textures[8] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.paredeint03)));
+			textures[8].compress();
+			TextureManager.getInstance().addTexture("paredeint03.jpg", textures[8]);	
+			
+			textures[9] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.placa)));
+			textures[9].compress();
+			TextureManager.getInstance().addTexture("placa.jpg", textures[9]);	
+			
+			textures[10] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.placa3)));
+			textures[10].compress();
+			TextureManager.getInstance().addTexture("placa3.jpg", textures[10]);	
+		
+			textures[11] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.portaentrada1)));
+			textures[11].compress();
+			TextureManager.getInstance().addTexture("portaentrada1.jpg", textures[11]);	
+			
+			textures[12] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.portaentrada2)));
+			textures[12].compress();
+			TextureManager.getInstance().addTexture("portaentrada2.jpg", textures[12]);	
+			
+			textures[13] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.sueloentrada)));
+			textures[13].compress();
+			TextureManager.getInstance().addTexture("sueloentrada.jpg", textures[13]);	
+			
+			textures[14] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.telladocasita)));
+			textures[14].compress();
+			TextureManager.getInstance().addTexture("telladocasita.jpg", textures[14]);	
 
 			world = new World();
-			world.setAmbientLight(200, 200, 200);
+			world.setAmbientLight(50, 50, 50);
 			sun = new Light(world);
 			sun.setIntensity(250, 250, 250);
-			
-			Light sun2 = new Light(world);
-			sun2.setIntensity(250, 250, 250);
-			Light sun3 = new Light(world);
-			sun3.setIntensity(250, 250, 250);
-			
+						
 			
 			 cube = Primitives.getCube(30);
 			 cube.calcTextureWrapSpherical();
-			 cube.setTexture("barcot.jpg");
+			 cube.setTexture("telladocasita.jpg");
 			 cube.strip();
 			 cube.build();
-			 
-			font = new Texture(mActivity.getResources().openRawResource(R.raw.numbers));
-			font.setMipmap(false);
-
-			barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 2.0f));
+			//barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 2.0f));
 			
 			// barco.setTransparency(-1);
 			// barco =
 			// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.vance),
 			// mActivity.getResources().openRawResource(R.raw.vancemat), 1.0f));
-//			torre = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 10.0f));
-
+			torre = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 20.0f));
+			torre.rotateX(1.57f);
+			torre.setCulling(false);
+			torre.rotateMesh();
 			// barco.rotateX(1.5f);
 //			cube.rotateY(0.7853981763f);
-			world.addObject(cube);
+//			world.addObject(cube);
 			world.setClippingPlanes(2f, 2500f);
-			barco.setOrigin(new SimpleVector(0, 0, 0));
+//			barco.setOrigin(new SimpleVector(0, 0, 0));
+//			world.addObject(torre);
+			world.addObject(cube);
 			// world.addObjects(torre);io8 
 			cam = world.getCamera();
 			//cam.moveCamera(Camera.CAMERA_MOVEOUT, -3);
@@ -187,17 +247,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 //			cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
-			sv.set(cube.getTransformedCenter());
+			sv.set(torre.getTransformedCenter());
 			sv.z -= 20;
 			sun.setPosition(sv);	
-			SimpleVector sv2 = new SimpleVector();
-			sv2.set(cube.getTransformedCenter());
-			sv2.x -= 20;
-			sun2.setPosition(sv2);
-			SimpleVector sv3 = new SimpleVector();
-			sv3.set(cube.getTransformedCenter());
-			sv3.y -= 20;
-			sun3.setPosition(sv3);
 			MemoryHelper.compact();
 
 			init = true;
@@ -240,10 +292,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		//mModelView.rotateY(0.78f);
 		cam.setFOV(fov);
 		cam.setYFOV(fovy);
+		torre.setRotationMatrix(mModelView);
+		torre.setOrigin(new SimpleVector(x, y, z));
 		cube.setRotationMatrix(mModelView);
-		cube.setOrigin(new SimpleVector(x, y, z));
-		//torre.setRotationMatrix(mModelView);
-		//torre.setOrigin(new SimpleVector(x, y , z));
+		cube.setOrigin(new SimpleVector(x, y , z));
 
 	}
 
@@ -256,11 +308,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 
 		// Update render view (projection matrix and viewport) if needed:
-		//mActivity.updateRenderView();
+		mActivity.updateRenderView();
 		// Call our native function to render content
 		renderFrame();
 
-		cam.setFOV(fov);
 		setCameraMatrix(modelViewMat);
 		
 		if (showScene) {
@@ -268,10 +319,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 				world.renderScene(fb);
 				world.draw(fb);
 				
-				DebugLog.LOGD("Barco: " + cube.getTransformedCenter().x + ", " + cube.getTransformedCenter().y + ", " + cube.getTransformedCenter().z);
+//				DebugLog.LOGD("Barco: " + cube.getTransformedCenter().x + ", " + cube.getTransformedCenter().y + ", " + cube.getTransformedCenter().z);
 
-				DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " + cam.getPosition().y + ", " + cam.getPosition().z);
-			fb.display();
+//				DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " + cam.getPosition().y + ", " + cam.getPosition().z);
+				fb.display();
 		}
 
 	}

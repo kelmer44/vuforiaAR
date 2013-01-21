@@ -303,7 +303,12 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	// Explicitly render the Video Background
 	QCAR::Renderer::getInstance().drawVideoBackground();
 
-
+	if(state.getNumTrackableResults()>0){
+		env->CallVoidMethod(obj, patternRecognizedMethod, true);
+	}
+	else {
+		env->CallVoidMethod(obj, patternRecognizedMethod, false);
+	}
 	// Did we find any trackables this frame?
 	for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
 	{
@@ -313,7 +318,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
 
-		env->CallVoidMethod(obj, patternRecognizedMethod, true);
+
 
 		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
 
