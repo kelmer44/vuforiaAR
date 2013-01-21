@@ -276,7 +276,8 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
 	QCAR::Vec2F size = cameraCalibration.getSize();
 	QCAR::Vec2F focalLength = cameraCalibration.getFocalLength();
-	float fovRadians = 2 * atan(0.5f * size.data[1] / focalLength.data[1]);
+	float fovyRadians = 2 * atan(0.5f * size.data[1] / focalLength.data[1]);
+	float fovRadians = 2 * atan(0.5f * size.data[0] / focalLength.data[0]);
 	float fovDegrees = fovRadians * 180.0f / M_PI;
 
 		// Passing the Modelview matrix up to Java
@@ -285,14 +286,16 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	jmethodID projMatMethod = env->GetMethodID(activityClass, "updateProjMatrix", "([F)V");
 	jmethodID patternRecognizedMethod = env->GetMethodID(activityClass, "isTracking", "(Z)V");
 	jmethodID fovMethod = env->GetMethodID(activityClass, "setFov", "(F)V");
+	jmethodID fovyMethod = env->GetMethodID(activityClass, "setFovy", "(F)V");
 	env->CallVoidMethod(obj, fovMethod, fovRadians);
+	env->CallVoidMethod(obj, fovyMethod, fovyRadians);
 
 	//LOG("SIZE: w: %f, h: %f, fov: %f", size.data[0], size.data[1], fovRadians);
 	jfloatArray modelviewArray = env->NewFloatArray(16);
 	jfloatArray projectionArray = env->NewFloatArray(16);
 
 	// Clear color and depth buffer
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
 	// Get the state from QCAR and mark the beginning of a rendering section
 	QCAR::State state = QCAR::Renderer::getInstance().begin();
