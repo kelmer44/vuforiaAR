@@ -300,28 +300,17 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	// Explicitly render the Video Background
 	QCAR::Renderer::getInstance().drawVideoBackground();
 
-#ifdef USE_OPENGL_ES_1_1
-	// Set GL11 flags:
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glEnable(GL_TEXTURE_2D);
-	glDisable(GL_LIGHTING);
-
-#endif
-
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 
 	// We must detect if background reflection is active and adjust the culling direction.
 	// If the reflection is active, this means the post matrix has been reflected as well,
 	// therefore standard counter clockwise face culling will result in "inside out" models.
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_BACK);
-	if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	/*if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
 	glFrontFace(GL_CW);//Front camera
 	else
-	glFrontFace(GL_CCW);//Back camera
+	glFrontFace(GL_CCW);//Back camera*/
 
 	if(state.getNumTrackableResults()==0){
 		env->CallVoidMethod(obj, patternRecognizedMethod, false);
@@ -335,7 +324,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
 
-
+/*
 
 
 
@@ -359,15 +348,13 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		SampleUtils::multiplyMatrix(&projectionMatrix.data[0], &modelViewMatrix.data[0] , &modelViewProjection.data[0]);
 
 		SampleUtils::checkGlError("ImageTargets renderFrame");
-#endif
-		env->CallVoidMethod(obj, patternRecognizedMethod, true);
-
-		QCAR::Matrix44F modelViewMatrix2 = QCAR::Tool::convertPose2GLMatrix(result->getPose());
-		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix2.data[0]);
+#endif*/
+		//env->CallVoidMethod(obj, patternRecognizedMethod, true);
+		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
 
 		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &projectionMatrix.data[0]);
 		// Passing the ModelView matrix up to Java (cont.)
-		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix2.data);
+		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix.data);
 		env->SetFloatArrayRegion(projectionArray, 0, 16, projectionMatrix.data);
 		env->CallVoidMethod(obj, method, modelviewArray);
 		env->CallVoidMethod(obj, projMatMethod, projectionArray);
@@ -375,18 +362,6 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	
 	env->DeleteLocalRef(modelviewArray);
 
-	glDisable(GL_DEPTH_TEST);
-
-#ifdef USE_OPENGL_ES_1_1        
-	glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_NORMAL_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-#else
-	glDisableVertexAttribArray(vertexHandle);
-	glDisableVertexAttribArray(normalHandle);
-	glDisableVertexAttribArray(textureCoordHandle);
-#endif
 
 	QCAR::Renderer::getInstance().end();
 }
