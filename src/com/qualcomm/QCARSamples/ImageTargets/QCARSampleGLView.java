@@ -58,7 +58,6 @@ public class QCARSampleGLView extends GLSurfaceView {
 		// custom config chooser. See ConfigChooser class definition
 		// below.
 		setEGLConfigChooser(translucent ? new ConfigChooser(8, 8, 8, 8, depth, stencil) : new ConfigChooser(5, 6, 5, 0, depth, stencil));
-		//setEGLConfigChooser(5,6,5,0,16,0);
 	}
 
 	/** Creates OpenGL contexts. */

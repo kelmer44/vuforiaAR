@@ -37,7 +37,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private FrameBuffer	fb			= null;
 	private World		world		= null;
 
-	private RGBColor	back		= new RGBColor(0, 0, 0, 0);
+	private RGBColor	back		= new RGBColor(0, 0, 0, 255);
 
 	private Object3D	cube		= null;
 	private Object3D	barco		= null;
@@ -123,7 +123,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			fb.dispose();
 		}
 		// fb = new FrameBuffer(gl, width,height);
-		fb = new FrameBuffer(width, height);
+		fb = new FrameBuffer(640, 480);
 
 		if (!init) {
 			// Create a texture out of the icon...:-)
@@ -144,7 +144,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			font = new Texture(mActivity.getResources().openRawResource(R.raw.numbers));
 			font.setMipmap(false);
 
-			barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 3.0f));
+			barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 2.0f));
 			
 			// barco.setTransparency(-1);
 			// barco =
@@ -159,8 +159,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			barco.setOrigin(new SimpleVector(0, 0, 0));
 			// world.addObjects(torre);io8 
 			cam = world.getCamera();
-			cam.moveCamera(Camera.CAMERA_MOVEOUT, 100);
-			cam.lookAt(barco.getTransformedCenter());
+			// cam.moveCamera(Camera.CAMERA_MOVEOUT, 10);
+			// cam.lookAt(cube.getTransformedCenter());
 
 			SimpleVector sv = new SimpleVector();
 			sv.set(barco.getTransformedCenter());
@@ -216,27 +216,25 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (!mIsActive)
 			return;
-		
+
 		// Update render view (projection matrix and viewport) if needed:
 		mActivity.updateRenderView();
 		// Call our native function to render content
 		renderFrame();
-		
+
 		setCameraMatrix(modelViewMat);
-		//barco.rotateX(0.1f);
+
+		
 		if (showScene) {
 			//fb.clear(back);
 				world.renderScene(fb);
 				world.draw(fb);
 				
-				//DebugLog.LOGD("Barco: " + barco.getTranslation().x + ", " + barco.getTranslation().y + ", " + barco.getTranslation().z);
+				DebugLog.LOGD("Barco: " + barco.getTranslation().x + ", " + barco.getTranslation().y + ", " + barco.getTranslation().z);
 
-				//DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " + cam.getPosition().y + ", " + cam.getPosition().z);
+				DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " + cam.getPosition().y + ", " + cam.getPosition().z);
 			fb.display();
 		}
-
-
-		
 
 	}
 

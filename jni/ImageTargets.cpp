@@ -300,21 +300,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	// Explicitly render the Video Background
 	QCAR::Renderer::getInstance().drawVideoBackground();
 
-	//glEnable(GL_DEPTH_TEST);
 
-	// We must detect if background reflection is active and adjust the culling direction.
-	// If the reflection is active, this means the post matrix has been reflected as well,
-	// therefore standard counter clockwise face culling will result in "inside out" models.
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-	/*if(QCAR::Renderer::getInstance().getVideoBackgroundConfig().mReflection == QCAR::VIDEO_BACKGROUND_REFLECTION_ON)
-	glFrontFace(GL_CW);//Front camera
-	else
-	glFrontFace(GL_CCW);//Back camera*/
-
-	if(state.getNumTrackableResults()==0){
-		env->CallVoidMethod(obj, patternRecognizedMethod, false);
-	}
 	// Did we find any trackables this frame?
 	for(int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++)
 	{
@@ -324,32 +310,8 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
 
-/*
+		env->CallVoidMethod(obj, patternRecognizedMethod, true);
 
-
-
-#ifdef USE_OPENGL_ES_1_1
-		// Load projection matrix:
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrixf(projectionMatrix.data);
-
-		// Load model view matrix:
-		glMatrixMode(GL_MODELVIEW);
-		glLoadMatrixf(modelViewMatrix.data);
-		glTranslatef(0.f, 0.f, kObjectScale);
-		glScalef(kObjectScale, kObjectScale, kObjectScale);
-
-#else
-		//En la 2.0 lo hacen todo vía shaders, así que calculan la matriz modelviewProjection
-		QCAR::Matrix44F modelViewProjection;
-
-		SampleUtils::translatePoseMatrix(0.0f, 0.0f, kObjectScale, &modelViewMatrix.data[0]);
-		SampleUtils::scalePoseMatrix(kObjectScale, kObjectScale, kObjectScale, &modelViewMatrix.data[0]);
-		SampleUtils::multiplyMatrix(&projectionMatrix.data[0], &modelViewMatrix.data[0] , &modelViewProjection.data[0]);
-
-		SampleUtils::checkGlError("ImageTargets renderFrame");
-#endif*/
-		//env->CallVoidMethod(obj, patternRecognizedMethod, true);
 		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
 
 		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &projectionMatrix.data[0]);
@@ -361,7 +323,6 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	}
 	
 	env->DeleteLocalRef(modelviewArray);
-
 
 	QCAR::Renderer::getInstance().end();
 }
