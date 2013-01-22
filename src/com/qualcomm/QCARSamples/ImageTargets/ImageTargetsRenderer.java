@@ -230,7 +230,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.vance),
 			// mActivity.getResources().openRawResource(R.raw.vancemat), 1.0f));
 			torre = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 20.0f));
-			torre.rotateX(1.57f);
+			torre.rotateX(0.7853981763f);
 			torre.setCulling(false);
 			torre.rotateMesh();
 			// barco.rotateX(1.5f);
@@ -291,9 +291,11 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		//cam.setPosition(x, y, z);
 		
 		//mModelView.rotateY(0.78f);
-		cam.setBack(mModelView);
-		cam.setFOV(fov);		
+		cam.setFOV(fov);	
 		cam.setYFOV(fovy);
+		cam.setBack(mModelView);
+			
+		
 
 		//torre.setRotationMatrix(mModelView);
 		//torre.setOrigin(new SimpleVector(x, y, z));
