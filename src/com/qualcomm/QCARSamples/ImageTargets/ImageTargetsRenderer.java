@@ -137,6 +137,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			
 			for(int i=0;i<torre.length;i++){
 				torre[i].setCulling(Object3D.CULLING_DISABLED);
+				torre[i].build();
 				
 			}
 			
