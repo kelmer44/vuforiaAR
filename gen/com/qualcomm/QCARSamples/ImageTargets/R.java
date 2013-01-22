@@ -27,10 +27,25 @@ public final class R {
         public static final int activity_splash_logo=0x7f020000;
         public static final int barcot=0x7f020001;
         public static final int blueprint_vuforia=0x7f020002;
-        public static final int ic_launcher=0x7f020003;
-        public static final int splash_background_tile=0x7f020004;
-        public static final int tiled_background=0x7f020005;
-        public static final int velas=0x7f020006;
+        public static final int casita1=0x7f020003;
+        public static final int cristalescupula=0x7f020004;
+        public static final int frontalescaleiras2=0x7f020005;
+        public static final int ic_launcher=0x7f020006;
+        public static final int lateralcasita=0x7f020007;
+        public static final int murofachada2b=0x7f020008;
+        public static final int muroforaretocado=0x7f020009;
+        public static final int paredeint03=0x7f02000a;
+        public static final int placa=0x7f02000b;
+        public static final int placa3=0x7f02000c;
+        public static final int portaentrada1=0x7f02000d;
+        public static final int portaentrada2=0x7f02000e;
+        public static final int rayasescaleiras=0x7f02000f;
+        public static final int splash_background_tile=0x7f020010;
+        public static final int suelo=0x7f020011;
+        public static final int sueloentrada=0x7f020012;
+        public static final int telladocasita=0x7f020013;
+        public static final int tiled_background=0x7f020014;
+        public static final int velas=0x7f020015;
     }
     public static final class id {
         public static final int about_text=0x7f090000;
@@ -50,11 +65,14 @@ public final class R {
     public static final class raw {
         public static final int barco=0x7f040000;
         public static final int barcomat=0x7f040001;
-        public static final int sofa=0x7f040002;
-        public static final int sofamat=0x7f040003;
-        public static final int torremat=0x7f040004;
-        public static final int torresola=0x7f040005;
-        public static final int velas=0x7f040006;
+        public static final int numbers=0x7f040002;
+        public static final int sofa=0x7f040003;
+        public static final int sofamat=0x7f040004;
+        public static final int torremat=0x7f040005;
+        public static final int torresola=0x7f040006;
+        public static final int vance=0x7f040007;
+        public static final int vancemat=0x7f040008;
+        public static final int velas=0x7f040009;
     }
     public static final class string {
         public static final int about_text=0x7f070005;

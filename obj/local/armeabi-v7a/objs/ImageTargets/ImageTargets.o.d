@@ -21,6 +21,14 @@ obj/local/armeabi-v7a/objs/ImageTargets/ImageTargets.o: \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/string.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/malloc.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/assert.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/math.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/limits.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/sys/limits.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/linux/limits.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/machine/internal_types.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/machine/limits.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/sys/syslimits.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/asm/page.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2platform.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/KHR/khrplatform.h \
@@ -88,6 +96,22 @@ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/string.h:
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/malloc.h:
 
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/assert.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/math.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/limits.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/sys/limits.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/linux/limits.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/machine/internal_types.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/machine/limits.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/sys/syslimits.h:
+
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/asm/page.h:
 
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2.h:
 

@@ -1,0 +1,43 @@
+# Max2Mtl Version 4.0 Mar 10th, 2001
+#
+# Multi/Sub Default (4) to come 
+#
+newmtl male_08_male_08_reference_smd_m
+Ka  1.0 1.0 1.0
+Kd  1.0 1.0 1.0
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  0.0
+illum 2
+map_Kd citizen_sheet.tga
+#
+newmtl male_08_male_08_reference_smd_m0
+Ka  0.4 0.4 0.4
+Kd  0.4 0.4 0.4
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  0.0
+illum 2
+#
+newmtl male_08_male_08_reference_smd_m1
+Ka  1.0 1.0 1.0
+Kd  1.0 1.0 1.0
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  0.0
+illum 2
+map_Kd 1174.jpg
+bump 1174-normal.jpg
+#
+newmtl male_08_male_08_reference_smd_m2
+Ka  1.0 1.0 1.0
+Kd  1.0 1.0 1.0
+Ks  1.0 1.0 1.0
+d  1.0
+Ns  0.0
+illum 2
+map_Kd vance_facemap.tga
+#
+# Multi/Sub Default done 
+#
+# EOF
