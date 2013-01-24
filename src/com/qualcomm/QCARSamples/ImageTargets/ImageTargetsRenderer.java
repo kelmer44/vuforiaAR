@@ -13,9 +13,16 @@
 
 package com.qualcomm.QCARSamples.ImageTargets;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 
 import com.qualcomm.QCAR.QCAR;
@@ -174,71 +181,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			// TextureManager.getInstance().addTexture("barcot.jpg",
 			// textureBarco);
 			//
-			Texture textureVelas = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.velas)), 1024, 1024));
-			TextureManager.getInstance().addTexture("velas.jpg", textureVelas);
-			Texture[] textures;
-			Texture.defaultTo4bpp(true);
-			textures = new Texture[15];
-			textures[0] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.murofachada2b)));
-			textures[0].enable4bpp(true);
-			textures[0].compress();
-			TextureManager.getInstance().addTexture("murofachada2b.jpg", textures[0]);
-
-			textures[1] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.rayasescaleiras)));
-			textures[1].compress();
-			TextureManager.getInstance().addTexture("rayasescaleiras.jpg", textures[1]);
-
-			textures[2] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.suelo)));
-			textures[2].compress();
-			TextureManager.getInstance().addTexture("suelo.jpg", textures[2]);
-
-			textures[3] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.casita1)));
-			textures[3].compress();
-			TextureManager.getInstance().addTexture("casita1.jpg", textures[3]);
-
-			textures[4] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.cristalescupula)));
-			textures[4].compress();
-			TextureManager.getInstance().addTexture("cristalescupula.jpg", textures[4]);
-
-			textures[5] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.frontalescaleiras2)));
-			textures[5].compress();
-			TextureManager.getInstance().addTexture("frontalescaleiras2.jpg", textures[5]);
-
-			textures[6] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.lateralcasita)));
-			textures[6].compress();
-			TextureManager.getInstance().addTexture("lateralcasita.jpg", textures[6]);
-
-			textures[7] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.muroforaretocado)));
-			textures[7].compress();
-			TextureManager.getInstance().addTexture("muroforaretocado.jpg", textures[7]);
-
-			textures[8] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.paredeint03)));
-			textures[8].compress();
-			TextureManager.getInstance().addTexture("paredeint03.jpg", textures[8]);
-
-			textures[9] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.placa)));
-			textures[9].compress();
-			TextureManager.getInstance().addTexture("placa.jpg", textures[9]);
-
-			textures[10] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.placa3)));
-			textures[10].compress();
-			TextureManager.getInstance().addTexture("placa3.jpg", textures[10]);
-
-			textures[11] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.portaentrada1)));
-			textures[11].compress();
-			TextureManager.getInstance().addTexture("portaentrada1.jpg", textures[11]);
-
-			textures[12] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.portaentrada2)));
-			textures[12].compress();
-			TextureManager.getInstance().addTexture("portaentrada2.jpg", textures[12]);
-
-			textures[13] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.sueloentrada)));
-			textures[13].compress();
-			TextureManager.getInstance().addTexture("sueloentrada.jpg", textures[13]);
-
-			textures[14] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.telladocasita)));
-			textures[14].compress();
-			TextureManager.getInstance().addTexture("telladocasita.jpg", textures[14]);
+			loadObjects();
 
 			world = new World();
 			world.setClippingPlanes(2f, 2500f);
@@ -248,34 +191,23 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 			cube = Primitives.getCube(30);
 			cube.calcTextureWrapSpherical();
-			cube.setTexture("velas.jpg");
+			//cube.setTexture("velas.jpg");
 			cube.strip();
 			cube.build();
 
-			plane = Primitives.getPlane(3, 30);
+			plane = Primitives.getPlane(3, 70);
 			// plane.rotateX((float) 1.53);
 			plane.setCulling(false);
 			plane.setSpecularLighting(true);
-			plane.setTexture("velas.jpg");
+			//plane.setTexture("grass01.jpg");
 
-			// barco =
-			// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco),
-			// mActivity.getResources().openRawResource(R.raw.barcomat), 2.0f));
-
-			// barco.setTransparency(-1);
-			// barco =
-			// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.vance),
-			// mActivity.getResources().openRawResource(R.raw.vancemat), 1.0f));
-			torre = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 20.0f));
-			torre.rotateX(0.7853981763f);
-			// torre.setCulling(false);
-			// torre.rotateMesh();
+		
 			// barco.rotateX(1.5f);
 			cube.rotateY(0.7853981763f);
 			// cube.rotateMesh();
 			// world.addObject(cube);
-			world.addObject(cube);
-			world.addObject(plane);
+			//world.addObject(cube);
+			//world.addObject(plane);
 			world.addObject(torre);
 			cam = world.getCamera();
 
@@ -288,6 +220,55 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 			init = true;
 		}
+	}
+
+	private void loadObjects() {
+		
+
+		Texture.defaultTo4bpp(true);
+		AssetManager mngr=mActivity.getAssets();
+		
+		try {
+			InputStream is2=mngr.open("torrebasemat.mtl");
+			Scanner input;
+			input = new Scanner(is2);
+			while (input.hasNext()) {
+
+				String s = input.nextLine();
+				if (s.startsWith("map_Kd")) {
+					String filename = s.substring(6, s.length());
+					filename = filename.trim();
+					if(filename.startsWith("-s")){
+						
+						filename = filename.substring(filename.lastIndexOf(' ')+1, filename.length());
+					}
+					
+					System.out.println(filename);
+					Texture t = new Texture(mngr.open(filename));
+					t.compress();
+					TextureManager.getInstance().addTexture(filename, t);
+				}
+			}
+
+			input.close();
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+				
+		torre = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torrebase), mActivity.getResources().openRawResource(R.raw.torrebasemat), 20.0f));
+
+		torre.compile();
+		torre.rotateX(-(float)Math.PI/2);
+		//torreSingle.rotateMesh();
+		torre.build();
+		torre.setRotationPivot(SimpleVector.ORIGIN);
 	}
 
 	/** The native render function. */
@@ -315,11 +296,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		com.threed.jpct.Matrix mModelView = new com.threed.jpct.Matrix();
 
 		mModelView.setDump(modelViewMatrixFromVuforia);
-		if (mode == 1) {
-			mModelView.invert();
-		} else if (mode == 2) {
-			mModelView.rotateAxis(new SimpleVector(1, 0, 0), (float) Math.PI);
-		}
+		/*
+		 * if (mode == 1) { mModelView.invert(); } else if (mode == 2) {
+		 * mModelView.rotateAxis(new SimpleVector(1, 0, 0), (float) Math.PI); }
+		 */
 		// mProjection.setDump(projectionMatrix);
 		// mModelView = mModelView.invert();
 		// barco.setOrigin(new SimpleVector(x, y, z));
@@ -360,6 +340,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		setCameraMatrix(modelViewMat);
 
 		if (showScene) {
+			if (mode == 1) {
+				torre.rotateX(-0.01f);
+			}
 			// fb.clear(back);
 			world.renderScene(fb);
 			world.draw(fb);
