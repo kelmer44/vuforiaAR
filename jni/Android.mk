@@ -18,8 +18,8 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := QCAR-prebuilt
-LOCAL_SRC_FILES = ../../../build/lib/$(TARGET_ARCH_ABI)/libQCAR.so
-LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../build/include
+LOCAL_SRC_FILES = ../../../../Android/Vuforia/build/lib/$(TARGET_ARCH_ABI)/libQCAR.so
+LOCAL_EXPORT_C_INCLUDES := $(LOCAL_PATH)/../../../../Android/Vuforia/build/include
 include $(PREBUILT_SHARED_LIBRARY)
 
 #-----------------------------------------------------------------------------
@@ -86,7 +86,7 @@ LOCAL_SHARED_LIBRARIES := QCAR-prebuilt
 # compute dependencies automatically for you, just list the source files
 # that will be passed directly to a compiler.
 
-LOCAL_SRC_FILES := ImageTargets.cpp SampleUtils.cpp Texture.cpp
+LOCAL_SRC_FILES := ImageTargets.cpp SampleUtils.cpp Texture.cpp SampleMath.cpp
 
 # By default, ARM target binaries will be generated in 'thumb' mode, where
 # each instruction is 16-bit wide. You can set this variable to 'arm' to

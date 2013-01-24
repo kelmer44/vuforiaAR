@@ -44,6 +44,7 @@
 #include "Texture.h"
 #include "CubeShaders.h"
 #include "Teapot.h"
+#include "SampleMath.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -280,13 +281,20 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	float fovRadians = 2 * atan(0.5f * size.data[0] / focalLength.data[0]);
 	float fovDegrees = fovRadians * 180.0f / M_PI;
 
-		// Passing the Modelview matrix up to Java
+	// Passing the Modelview matrix up to Java
 	jclass activityClass = env->GetObjectClass(obj);
 	jmethodID method = env->GetMethodID(activityClass, "updateModelviewMatrix", "([F)V");
-	jmethodID projMatMethod = env->GetMethodID(activityClass, "updateProjMatrix", "([F)V");
 	jmethodID patternRecognizedMethod = env->GetMethodID(activityClass, "isTracking", "(Z)V");
 	jmethodID fovMethod = env->GetMethodID(activityClass, "setFov", "(F)V");
 	jmethodID fovyMethod = env->GetMethodID(activityClass, "setFovy", "(F)V");
+
+	jmethodID camPosMethod = env->GetMethodID(activityClass, "setCameraPos", "(FFF)V");
+	jmethodID camRightVecMethod = env->GetMethodID(activityClass, "setCameraRightVector", "(FFF)V");
+	jmethodID camUpVecMethod = env->GetMethodID(activityClass, "setCameraUpVector", "(FFF)V");
+	jmethodID camDirVecMethod = env->GetMethodID(activityClass, "setCameraDirectionVector", "(FFF)V");
+
+
+
 	env->CallVoidMethod(obj, fovMethod, fovRadians);
 	env->CallVoidMethod(obj, fovyMethod, fovyRadians);
 
@@ -303,7 +311,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 	// Explicitly render the Video Background
 	QCAR::Renderer::getInstance().drawVideoBackground();
 
-	if(state.getNumTrackableResults()>0){
+	if(state.getNumTrackableResults()>0) {
 		env->CallVoidMethod(obj, patternRecognizedMethod, true);
 	}
 	else {
@@ -317,19 +325,40 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 		const QCAR::Trackable& trackable = result->getTrackable();
 		QCAR::Matrix44F modelViewMatrix = QCAR::Tool::convertPose2GLMatrix(result->getPose());
 
+		QCAR::Matrix44F inverseMV = SampleMath::Matrix44FInverse(modelViewMatrix);
+		QCAR::Matrix44F invTranspMV = SampleMath::Matrix44FTranspose(inverseMV);
 
+		//Camera position
+		float cam_x = invTranspMV.data[12];
+		float cam_y = invTranspMV.data[13];
+		float cam_z = invTranspMV.data[14];
+
+		//CAmera orientation axis (camera viewing direction, camera right direction and camera up direction)
+		float cam_right_x = invTranspMV.data[0];
+		float cam_right_y = invTranspMV.data[1];
+		float cam_right_z = invTranspMV.data[2];
+
+		float cam_up_x = -invTranspMV.data[4];
+		float cam_up_y = -invTranspMV.data[5];
+		float cam_up_z = -invTranspMV.data[6];
+
+		float cam_dir_x = invTranspMV.data[8];
+		float cam_dir_y = invTranspMV.data[9];
+		float cam_dir_z = invTranspMV.data[10];
+
+
+		env->CallVoidMethod(obj, camPosMethod, cam_x, cam_y, cam_z);
+		env->CallVoidMethod(obj, camRightVecMethod, cam_right_x, cam_right_y, cam_right_z);
+		env->CallVoidMethod(obj, camUpVecMethod, cam_up_x, cam_up_y, cam_up_z);
+		env->CallVoidMethod(obj, camDirVecMethod, cam_dir_x, cam_dir_y, cam_dir_z);
 
 
 		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &modelViewMatrix.data[0]);
-
-		SampleUtils::rotatePoseMatrix(180.0f, 1.0f, 0, 0, &projectionMatrix.data[0]);
 		// Passing the ModelView matrix up to Java (cont.)
 		env->SetFloatArrayRegion(modelviewArray, 0, 16, modelViewMatrix.data);
-		env->SetFloatArrayRegion(projectionArray, 0, 16, projectionMatrix.data);
 		env->CallVoidMethod(obj, method, modelviewArray);
-		env->CallVoidMethod(obj, projMatMethod, projectionArray);
 	}
-	
+
 	env->DeleteLocalRef(modelviewArray);
 
 	QCAR::Renderer::getInstance().end();
@@ -440,6 +469,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_s
 
 	env->CallVoidMethod(obj, sceensizeMethod, config.mSize.data[0], config.mSize.data[1]);
 
+	// Cache the projection matrix:
 
 	// Start the camera:
 	if (!QCAR::CameraDevice::getInstance().start())
@@ -478,10 +508,26 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_s
 JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_setProjectionMatrix(JNIEnv *, jobject)
 {
 	LOG("Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_setProjectionMatrix");
-
+	QCAR::VideoBackgroundConfig config = QCAR::Renderer::getInstance().getVideoBackgroundConfig();
 	// Cache the projection matrix:
 	const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
 	projectionMatrix = QCAR::Tool::getProjectionGL(cameraCalibration, 2.0f, 2500.0f);
+
+	int viewportWidth = config.mSize.data[0];
+	int viewportHeight = config.mSize.data[1];
+
+	if (viewportWidth != screenWidth)
+	{
+		float viewportDistort = viewportWidth / (float) screenWidth;
+		projectionMatrix.data[0] *= viewportDistort;
+	}
+
+	if (viewportHeight != screenHeight)
+	{
+		float viewportDistort = viewportHeight / (float) screenHeight;
+		projectionMatrix.data[5] *= viewportDistort;
+	}
+
 }
 
 // ----------------------------------------------------------------------------
