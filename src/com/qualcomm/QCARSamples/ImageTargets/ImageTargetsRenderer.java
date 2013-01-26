@@ -13,7 +13,6 @@
 
 package com.qualcomm.QCARSamples.ImageTargets;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +36,6 @@ import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
 import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
-import com.threed.jpct.util.BitmapHelper;
 import com.threed.jpct.util.MemoryHelper;
 
 /** The renderer class for the ImageTargets sample. */
@@ -185,7 +183,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 			world = new World();
 			world.setClippingPlanes(2f, 2500f);
-			world.setAmbientLight(50, 50, 50);
+			world.setAmbientLight(0, 0, 0);
 			sun = new Light(world);
 			sun.setIntensity(250, 250, 250);
 
@@ -212,10 +210,22 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			cam = world.getCamera();
 
 			SimpleVector sv = new SimpleVector();
-			sv.set(cube.getOrigin());
-			sv.z -= 50;
+			sv.set(torre.getOrigin());
+			sv.z += 100;
+			sv.y -= 30;
+			
+
+			Object3D sphere = Primitives.getSphere(5f);
+			sphere.calcTextureWrapSpherical();
+			sphere.setAdditionalColor(new RGBColor(255, 0, 0));
+			sphere.strip();
+			sphere.build();
+			
+			sphere.setOrigin(sv);
+			
+			//world.addObject(sphere);
 			sun.setPosition(sv);
-			sun.setAttenuation(800f);
+			sun.setAttenuation(200f);
 			MemoryHelper.compact();
 
 			init = true;
@@ -246,7 +256,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 					System.out.println(filename);
 					Texture t = new Texture(mngr.open(filename));
 					t.compress();
-					TextureManager.getInstance().addTexture(filename, t);
+					if(!TextureManager.getInstance().containsTexture(filename))
+						TextureManager.getInstance().addTexture(filename, t);
 				}
 			}
 
@@ -269,6 +280,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		//torreSingle.rotateMesh();
 		torre.build();
 		torre.setRotationPivot(SimpleVector.ORIGIN);
+		torre.translate(new SimpleVector(0.0f, +20.f, 0.0f));
 	}
 
 	/** The native render function. */
