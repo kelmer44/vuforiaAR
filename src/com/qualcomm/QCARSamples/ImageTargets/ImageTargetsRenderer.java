@@ -16,6 +16,7 @@ package com.qualcomm.QCARSamples.ImageTargets;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.res.Resources;
 import android.opengl.GLSurfaceView;
 
 import com.qualcomm.QCAR.QCAR;
@@ -32,6 +33,16 @@ import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
 import com.threed.jpct.util.BitmapHelper;
 import com.threed.jpct.util.MemoryHelper;
+import com.threed.jpct.GLSLShader;
+
+
+import java.lang.reflect.Field;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.ScaleGestureDetector.OnScaleGestureListener;
 
 /** The renderer class for the ImageTargets sample. */
 public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
@@ -43,6 +54,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private Object3D	cube		= null;
 	private Object3D	barco		= null;
 	private Object3D	torre		= null;
+	private Object3D	plane		= null;
+	private GLSLShader  shader		= null;
 	private int			fps			= 0;
 
 	private Light		sun			= null;
@@ -217,6 +230,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			sun = new Light(world);
 			sun.setIntensity(250, 250, 250);
 						
+			plane = Primitives.getPlane(1, 50);
+
+						
 			
 			 cube = Primitives.getCube(30);
 			 cube.calcTextureWrapSpherical();
@@ -233,6 +249,15 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			torre.rotateX(0.7853981763f);
 			torre.setCulling(false);
 			torre.rotateMesh();
+			
+			Resources res = mActivity.getResources();
+//System.out.println(Loader.loadTextFile(res.openRawResource(R.raw.vertex)));
+			shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.defaultvertexshader)), Loader.loadTextFile(res.openRawResource(R.raw.defaultfragmentshader)));
+			plane.setShader(shader);
+			
+			plane.build();
+			plane.strip();
+
 			// barco.rotateX(1.5f);
 			cube.rotateX(0.7853981763f);
 //			world.addObject(cube);
@@ -240,6 +265,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 //			barco.setOrigin(new SimpleVector(0, 0, 0));
 //			world.addObject(torre);
 			world.addObject(torre);
+			world.addObject(plane);
 			// world.addObjects(torre);io8 
 			cam = world.getCamera();
 			//cam.moveCamera(Camera.CAMERA_MOVEOUT, -3);
@@ -293,7 +319,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		//mModelView.rotateY(0.78f);
 		cam.setFOV(fov);	
 		cam.setYFOV(fovy);
+		
 		cam.setBack(mModelView);
+		//cam.setPosition(x, y, z);
+		
 			
 		
 
