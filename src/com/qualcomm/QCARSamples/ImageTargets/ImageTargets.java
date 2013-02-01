@@ -68,10 +68,7 @@ public class ImageTargets extends Activity {
 	// QCAR initialization flags:
 	private int						mQCARFlags						= 0;
 
-	// The textures we will use for rendering:
-	private Vector<Texture>			mTextures;
-
-	private GLSurfaceView		mGlView;
+	private GLSurfaceView			mGlView;
 	private ImageTargetsRenderer	mRenderer						= null;
 
 	// Display size of the device:
@@ -92,8 +89,8 @@ public class ImageTargets extends Activity {
 	private boolean					mContAutofocus					= false;
 
 	private Handler					loadingDialogHandler			= new LoadingDialogHandler(this);
-	private int	camWidth;
-	private int	camHeight;
+	private int						camWidth;
+	private int						camHeight;
 
 	/** Static initializer block to load native libraries on start-up. */
 	static {
@@ -101,13 +98,12 @@ public class ImageTargets extends Activity {
 		loadLibrary(NATIVE_LIB_SAMPLE);
 	}
 
-	
-	public void setSize(float w, float h){
+	public void setSize(float w, float h) {
 		this.camWidth = (int) Math.ceil(w);
 		this.camHeight = (int) Math.ceil(h);
 		DebugLog.LOGD("w:" + this.camWidth + ", h: " + this.camHeight);
 	}
-	
+
 	/**
 	 * Creates a handler to update the status of the Loading Dialog from an UI
 	 * Thread
@@ -210,7 +206,7 @@ public class ImageTargets extends Activity {
 			}
 		}
 	}
-	
+
 	/** An async task to load the tracker data asynchronously. */
 	private class LoadTrackerTask extends AsyncTask<Void, Integer, Boolean> {
 		protected Boolean doInBackground(Void... params) {
@@ -265,24 +261,11 @@ public class ImageTargets extends Activity {
 		DebugLog.LOGD("ImageTargets::onCreate");
 		super.onCreate(savedInstanceState);
 
-		mTextures = new Vector<Texture>();
-		loadTextures();
-
 		// Query the QCAR initialization flags:
 		mQCARFlags = getInitializationFlags();
 
 		// Update the application status to start initializing application:
 		updateApplicationStatus(APPSTATUS_INIT_APP);
-	}
-
-	/**
-	 * We want to load specific textures from the APK, which we will later use
-	 * for rendering.
-	 */
-	private void loadTextures() {
-		mTextures.add(Texture.loadTextureFromApk("TextureTeapotBrass.png", getAssets()));
-		mTextures.add(Texture.loadTextureFromApk("TextureTeapotBlue.png", getAssets()));
-		mTextures.add(Texture.loadTextureFromApk("TextureTeapotRed.png", getAssets()));
 	}
 
 	/** Configure QCAR with the desired version of OpenGL ES. */
@@ -428,58 +411,45 @@ public class ImageTargets extends Activity {
 		QCAR.onPause();
 	}
 
+	/** Native function to deinitialize the application. */
+	private native void deinitApplicationNative();
 
-    /** Native function to deinitialize the application.*/
-    private native void deinitApplicationNative();
-	
-    
+	/** The final call you receive before your activity is destroyed. */
+	protected void onDestroy() {
+		DebugLog.LOGD("ImageTargets::onDestroy");
+		super.onDestroy();
 
-    /** The final call you receive before your activity is destroyed.*/
-    protected void onDestroy()
-    {
-        DebugLog.LOGD("ImageTargets::onDestroy");
-        super.onDestroy();
+		// Cancel potentially running tasks
+		if (mInitQCARTask != null && mInitQCARTask.getStatus() != InitQCARTask.Status.FINISHED) {
+			mInitQCARTask.cancel(true);
+			mInitQCARTask = null;
+		}
 
-        // Cancel potentially running tasks
-        if (mInitQCARTask != null &&
-            mInitQCARTask.getStatus() != InitQCARTask.Status.FINISHED)
-        {
-            mInitQCARTask.cancel(true);
-            mInitQCARTask = null;
-        }
+		if (mLoadTrackerTask != null && mLoadTrackerTask.getStatus() != LoadTrackerTask.Status.FINISHED) {
+			mLoadTrackerTask.cancel(true);
+			mLoadTrackerTask = null;
+		}
 
-        if (mLoadTrackerTask != null &&
-            mLoadTrackerTask.getStatus() != LoadTrackerTask.Status.FINISHED)
-        {
-            mLoadTrackerTask.cancel(true);
-            mLoadTrackerTask = null;
-        }
+		// Ensure that all asynchronous operations to initialize QCAR
+		// and loading the tracker datasets do not overlap:
+		synchronized (mShutdownLock) {
 
-        // Ensure that all asynchronous operations to initialize QCAR
-        // and loading the tracker datasets do not overlap:
-        synchronized (mShutdownLock) {
+			// Do application deinitialization in native code:
+			deinitApplicationNative();
 
-            // Do application deinitialization in native code:
-            deinitApplicationNative();
+			// Destroy the tracking data set:
+			destroyTrackerData();
 
-            // Unload texture:
-            mTextures.clear();
-            mTextures = null;
+			// Deinit the tracker:
+			deinitTracker();
 
-            // Destroy the tracking data set:
-            destroyTrackerData();
+			// Deinitialize QCAR SDK:
+			QCAR.deinit();
+		}
 
-            // Deinit the tracker:
-            deinitTracker();
+		System.gc();
+	}
 
-            // Deinitialize QCAR SDK:
-            QCAR.deinit();
-        }
-
-        System.gc();
-    }
-    
-    
 	/**
 	 * NOTE: this method is synchronized because of a potential concurrent
 	 * access by ImageTargets::onResume() and InitQCARTask::onPostExecute().
@@ -602,16 +572,16 @@ public class ImageTargets extends Activity {
 			throw new RuntimeException("Invalid application state");
 		}
 	}
-	
-    /** Tells native code whether we are in portait or landscape mode */
-    private native void setActivityPortraitMode(boolean isPortrait);
+
+	/** Tells native code whether we are in portait or landscape mode */
+	private native void setActivityPortraitMode(boolean isPortrait);
 
 	/** Initialize application GUI elements that are not related to AR. */
 	private void initApplication() {
 		// Set the screen orientation:
 		// NOTE: Use SCREEN_ORIENTATION_LANDSCAPE or SCREEN_ORIENTATION_PORTRAIT
 		// to lock the screen orientation for this activity.
-		//int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
+		// int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR;
 		int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
 
 		// This is necessary for enabling AutoRotation in the Augmented View
@@ -665,12 +635,12 @@ public class ImageTargets extends Activity {
 		int stencilSize = 0;
 		boolean translucent = QCAR.requiresAlpha();
 
-		//mGlView = new QCARSampleGLView(this);
+		// mGlView = new QCARSampleGLView(this);
 		mGlView = new GLSurfaceView(this.getApplication());
-		//mGlView.init(mQCARFlags, translucent, depthSize, stencilSize);
+		// mGlView.init(mQCARFlags, translucent, depthSize, stencilSize);
 		mGlView.setEGLContextClientVersion(2);
 		mGlView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		
+
 		mRenderer = new ImageTargetsRenderer(this);
 		mGlView.setRenderer(mRenderer);
 		// setContentView(mGlView);
@@ -689,23 +659,13 @@ public class ImageTargets extends Activity {
 		addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
 	}
+
 	private native boolean autofocus();
 
 	private native boolean setFocusMode(int mode);
 
 	/** Activates the Flash */
 	private native boolean activateFlash(boolean flash);
-
-	/** Returns the number of registered textures. */
-	public int getTextureCount() {
-		return mTextures.size();
-	}
-
-	/** Returns the texture object at the specified index. */
-	public Texture getTexture(int i) {
-		return mTextures.elementAt(i);
-	}
-
 
 	/** A helper for loading native libraries stored in "libs/armeabi*". */
 	public static boolean loadLibrary(String nLibName) {
@@ -722,45 +682,38 @@ public class ImageTargets extends Activity {
 		return false;
 	}
 
-	
 	public boolean onTouchEvent(MotionEvent me) {
 
-        if (me.getAction() == MotionEvent.ACTION_DOWN) {
-        	/*mRenderer.setXpos(me.getX());
-        	mRenderer.setYpos(me.getY());*/
-        	
-        	
-            return true;
-        }
+		if (me.getAction() == MotionEvent.ACTION_DOWN) {
+			/*
+			 * mRenderer.setXpos(me.getX()); mRenderer.setYpos(me.getY());
+			 */
 
-        if (me.getAction() == MotionEvent.ACTION_UP) {
-        	/*mRenderer.setXpos(-1);
-        	mRenderer.setYpos(-1);
-        	mRenderer.setTouchTurn(0);
-        	mRenderer.setTouchTurnUp(0);*/
-        	mRenderer.touch();
-            return true;
-        }
+			return true;
+		}
 
-        /*if (me.getAction() == MotionEvent.ACTION_MOVE) {
-            float xd = me.getX() - mRenderer.getXpos();
-            float yd = me.getY() - mRenderer.getYpos();
+		if (me.getAction() == MotionEvent.ACTION_UP) {
+			/*
+			 * mRenderer.setXpos(-1); mRenderer.setYpos(-1);
+			 * mRenderer.setTouchTurn(0); mRenderer.setTouchTurnUp(0);
+			 */
+			mRenderer.touch();
+			return true;
+		}
 
-            mRenderer.setXpos(me.getX());
-            mRenderer.setYpos(me.getY());
-            mRenderer.setTouchTurn(xd / -100f);
-            mRenderer.setTouchTurnUp(yd / -100f);
-            return true;
-        }
+		/*
+		 * if (me.getAction() == MotionEvent.ACTION_MOVE) { float xd = me.getX()
+		 * - mRenderer.getXpos(); float yd = me.getY() - mRenderer.getYpos();
+		 * 
+		 * mRenderer.setXpos(me.getX()); mRenderer.setYpos(me.getY());
+		 * mRenderer.setTouchTurn(xd / -100f); mRenderer.setTouchTurnUp(yd /
+		 * -100f); return true; }
+		 * 
+		 * try { Thread.sleep(15); } catch (Exception e) { // No need for
+		 * this... }
+		 */
 
-        try {
-            Thread.sleep(15);
-        } catch (Exception e) {
-            // No need for this...
-        }*/
+		return super.onTouchEvent(me);
+	}
 
-        return super.onTouchEvent(me);
-    }
-	
-	
 }

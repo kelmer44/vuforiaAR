@@ -80,9 +80,6 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private Camera						cam;
 	private float						rotate;
 	private boolean						invert;
-	private boolean						showScene		= false;
-	private int							screenWidth;
-	private int							screenHeight;
 
 	private Texture						font			= null;
 
@@ -106,10 +103,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		this.mActivity = activity;
 		mARHandler = new QCARFrameHandler();
-		init();
+		initScene();
 	}
 
-	private void init() {
+	private void initScene() {
 		world = new World();
 		world.setClippingPlanes(2f, 2500f);
 		world.setAmbientLight(50, 50, 50);
@@ -183,41 +180,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private void loadObjects() {
 
 		Texture.defaultTo4bpp(true);
-		AssetManager mngr = mActivity.getAssets();
-
-		try {
-			InputStream is2 = mngr.open("torrebasemat.mtl");
-			Scanner input;
-			input = new Scanner(is2);
-			while (input.hasNext()) {
-
-				String s = input.nextLine();
-				if (s.startsWith("map_Kd")) {
-					String filename = s.substring(6, s.length());
-					filename = filename.trim();
-					if (filename.startsWith("-s")) {
-
-						filename = filename.substring(filename.lastIndexOf(' ') + 1, filename.length());
-					}
-
-					System.out.println(filename);
-					Texture t = new Texture(mngr.open(filename));
-					t.compress();
-					if (!TextureManager.getInstance().containsTexture(filename))
-						TextureManager.getInstance().addTexture(filename, t);
-				}
-			}
-
-			input.close();
-
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		MtlTextureLoader.loadTexturesFromAssets("torrebasemat.mtl", mActivity.getAssets());
+		
 		Texture texture = new Texture(mActivity.getResources().getDrawable(R.drawable.gaviota));
 		texture.keepPixelData(true);
 		TextureManager.getInstance().addTexture("gaviota.jpg", texture);
