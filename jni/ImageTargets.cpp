@@ -271,7 +271,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargets_o
 	// QCAR::setHint(QCAR::HINT_MAX_SIMULTANEOUS_IMAGE_TARGETS, 2);
 }
 
-JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRenderer_renderFrame(JNIEnv *env, jobject obj)
+JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_QCARFrameHandler_renderFrame(JNIEnv *env, jobject obj)
 {
 	//LOG("Java_com_qualcomm_QCARSamples_ImageTargets_GLRenderer_renderFrame");
 	const QCAR::CameraCalibration& cameraCalibration = QCAR::CameraDevice::getInstance().getCameraCalibration();
@@ -574,7 +574,7 @@ JNIEXPORT jboolean JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTarge
 			JNI_TRUE : JNI_FALSE;
 }
 
-JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRenderer_initRendering( JNIEnv* env, jobject obj)
+JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_QCARFrameHandler_initRendering( JNIEnv* env, jobject obj)
 {
 	LOG("Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRenderer_initRendering");
 
@@ -583,7 +583,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRe
 
 }
 
-JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRenderer_updateRendering( JNIEnv* env, jobject obj, jint width, jint height)
+JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_QCARFrameHandler_updateRendering( JNIEnv* env, jobject obj, jint width, jint height)
 {
 	LOG("Java_com_qualcomm_QCARSamples_ImageTargets_ImageTargetsRenderer_updateRendering");
 
