@@ -124,7 +124,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		sphere.build();
 
 		sphere.setOrigin(sv);
-		world.addObject(sphere);
+		//world.addObject(sphere);
 		
 		sun.setPosition(sv);
 		sun.setAttenuation(400f);
@@ -367,10 +367,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (mARHandler.isTracking()) {
 			if (mode == 1) {
-				plane.rotateX(0.02f);
+				//plane.rotateX(0.02f);
 				//gaviota.getRoot().rotateX(-0.01f);
 			}
-			if(mode == 2){
+			if(mode == 0){
 				dummy.rotateZ(0.05f);
 			}
 			world.renderScene(fb);
