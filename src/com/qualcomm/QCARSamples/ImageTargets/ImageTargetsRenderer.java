@@ -13,6 +13,7 @@
 
 package com.qualcomm.QCARSamples.ImageTargets;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,8 +23,8 @@ import javax.microedition.khronos.opengles.GL10;
 import raft.jpct.bones.Animated3D;
 import raft.jpct.bones.AnimatedGroup;
 import raft.jpct.bones.BonesIO;
-import raft.jpct.bones.SkeletonPose;
 import raft.jpct.bones.SkinClip;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 
 import com.threed.jpct.Animation;
@@ -92,11 +93,28 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	private float	rotation;
 
+	private MediaPlayer	mMediaPlayer;
+
+	private float	sinMovement;
+
 	public ImageTargetsRenderer(ImageTargets activity) {
 
 		this.mActivity = activity;
 		mARHandler = new QCARFrameHandler();
+		
+
+		mMediaPlayer = MediaPlayer.create(mActivity.getApplicationContext(), R.raw.seagull);
+		try {
+			mMediaPlayer.prepare();
+		} catch (IllegalStateException e) {
+			DebugLog.LOGE("Could not load sound");
+		} catch (IOException e) {
+			DebugLog.LOGE("Could not load sound");
+		}
+
+		
 		initScene();
+		
 	}
 
 	private void initScene() {
@@ -366,6 +384,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		updateCamera();
 
 		if (mARHandler.isTracking()) {
+			
+			
+			mMediaPlayer.start();
+			
 			if (mode == 1) {
 				plane.translate(0,0,-0.1f);
 				DebugLog.LOGD("plane pos: " + plane.getTransformedCenter());
@@ -375,12 +397,17 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 				plane.translate(0,0,+0.1f);
 				DebugLog.LOGD("plane pos: " + plane.getTransformedCenter());
 			}
+			sinMovement +=0.1f;
+			gaviota.getRoot().translate(0, 0, (float) (0.5*Math.sin(sinMovement)));
 			dummy.rotateZ(0.05f);
 			world.renderScene(fb);
 			world.draw(fb);
 			fb.display();
 		}
-
+		else {
+			if(mMediaPlayer.isPlaying())
+				mMediaPlayer.pause();
+		}
 	}
 
 	public float getXpos() {

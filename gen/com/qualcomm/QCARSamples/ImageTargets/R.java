@@ -84,16 +84,17 @@ public final class R {
         public static final int barcomat=0x7f040001;
         public static final int gaviota=0x7f040002;
         public static final int numbers=0x7f040003;
-        public static final int sofa=0x7f040004;
-        public static final int sofamat=0x7f040005;
-        public static final int torre=0x7f040006;
-        public static final int torrebase=0x7f040007;
-        public static final int torrebasemat=0x7f040008;
-        public static final int torremat=0x7f040009;
-        public static final int torresola=0x7f04000a;
-        public static final int vance=0x7f04000b;
-        public static final int vancemat=0x7f04000c;
-        public static final int velas=0x7f04000d;
+        public static final int seagull=0x7f040004;
+        public static final int sofa=0x7f040005;
+        public static final int sofamat=0x7f040006;
+        public static final int torre=0x7f040007;
+        public static final int torrebase=0x7f040008;
+        public static final int torrebasemat=0x7f040009;
+        public static final int torremat=0x7f04000a;
+        public static final int torresola=0x7f04000b;
+        public static final int vance=0x7f04000c;
+        public static final int vancemat=0x7f04000d;
+        public static final int velas=0x7f04000e;
     }
     public static final class string {
         public static final int about_text=0x7f070005;
