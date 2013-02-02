@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ImageTarget</string>
-    <string name="app_description">QCAR ImageTargets Sample Application</string>
+    <string name="app_name">ARHércules</string>
+    <string name="app_description">Torre de Hércules en Realidad Aumentada</string>
     <string name="activity_splash_title">ImageTargets</string>
     <string name="activity_splash_subtitle">sample application</string>
     <string name="about_title">About</string>
