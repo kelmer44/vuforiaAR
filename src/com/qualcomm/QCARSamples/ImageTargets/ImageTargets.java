@@ -20,14 +20,16 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.qualcomm.QCAR.QCAR;
 import com.threed.jpct.Logger;
 
-public class ImageTargets extends Activity {
+public class ImageTargets extends Activity implements OnClickListener {
 	// Focus mode constants:
 	private static final int		FOCUS_MODE_NORMAL				= 0;
 	private static final int		FOCUS_MODE_CONTINUOUS_AUTO		= 1;
@@ -91,6 +93,19 @@ public class ImageTargets extends Activity {
 	private Handler					loadingDialogHandler			= new LoadingDialogHandler(this);
 	private int						camWidth;
 	private int						camHeight;
+	private RelativeLayout	mButtonLayout;
+	private Button	buttonMoveLeft;
+	private Button	buttonMoveRight;
+	private Button	buttonMoveDown;
+	private Button	buttonMoveUp;
+	private Button	buttonMoveForward;
+	private Button	buttonMoveBack;
+	private Button	buttonTurnXmore;
+	private Button	buttonTurnYmore;
+	private Button	buttonTurnYless;
+	private Button	buttonScaleMin;
+	private Button	buttonScalPlus;
+	private Button	buttonTurnXless;
 
 	/** Static initializer block to load native libraries on start-up. */
 	static {
@@ -557,6 +572,8 @@ public class ImageTargets extends Activity {
 			// Sets the layout background to transparent
 			mUILayout.setBackgroundColor(Color.TRANSPARENT);
 
+			
+			
 			// Set continuous auto-focus if supported by the device,
 			// otherwise default back to regular auto-focus mode.
 			// This will be activated by a tap to the screen in this
@@ -647,6 +664,26 @@ public class ImageTargets extends Activity {
 		LayoutInflater inflater = LayoutInflater.from(this);
 		mUILayout = (RelativeLayout) inflater.inflate(R.layout.camera_overlay, null, false);
 
+		mButtonLayout = (RelativeLayout) inflater.inflate(R.layout.uilayout, null, false);
+		
+		
+		buttonMoveLeft = (Button) mButtonLayout.findViewById(R.id.moveleft );
+		buttonMoveLeft.setOnClickListener(this);
+		buttonMoveRight = (Button) mButtonLayout.findViewById(R.id.moveright );
+		buttonMoveUp = (Button) mButtonLayout.findViewById(R.id.moveup );
+		buttonMoveDown = (Button) mButtonLayout.findViewById(R.id.movedn );
+		buttonMoveBack = (Button) mButtonLayout.findViewById(R.id.moveback );
+		buttonMoveForward = (Button) mButtonLayout.findViewById(R.id.movefw );
+		buttonTurnXmore = (Button) mButtonLayout.findViewById(R.id.turnxplus );
+		buttonTurnYmore = (Button) mButtonLayout.findViewById(R.id.turnyplus );
+		buttonTurnYless = (Button) mButtonLayout.findViewById(R.id.turnymin );
+		buttonScaleMin = (Button) mButtonLayout.findViewById(R.id.scalemin );
+		buttonScalPlus = (Button) mButtonLayout.findViewById(R.id.scaleplus );
+		buttonTurnXless = (Button) mButtonLayout.findViewById(R.id.turnxmin);
+		
+		
+		
+		
 		mUILayout.setVisibility(View.VISIBLE);
 		mUILayout.setBackgroundColor(Color.BLACK);
 
@@ -714,6 +751,12 @@ public class ImageTargets extends Activity {
 		 */
 
 		return super.onTouchEvent(me);
+	}
+
+	@Override
+	public void onClick(View v) {
+	
+		
 	}
 
 }

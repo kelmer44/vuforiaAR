@@ -13,12 +13,8 @@
 
 package com.qualcomm.QCARSamples.ImageTargets;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -28,10 +24,8 @@ import raft.jpct.bones.AnimatedGroup;
 import raft.jpct.bones.BonesIO;
 import raft.jpct.bones.SkeletonPose;
 import raft.jpct.bones.SkinClip;
-import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 
-import com.qualcomm.QCAR.QCAR;
 import com.threed.jpct.Animation;
 import com.threed.jpct.Camera;
 import com.threed.jpct.Config;
@@ -61,7 +55,6 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private Object3D					cube			= null;
 	private Object3D					barco			= null;
 	private Object3D					torre			= null;
-	private int							fps				= 0;
 
 	private Light						sun				= null;
 
@@ -73,15 +66,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	public boolean						mIsActive		= false;
 
-	private boolean						init			= false;
-
 	/** Reference to main activity **/
 	public ImageTargets					mActivity;
 	private Camera						cam;
-	private float						rotate;
-	private boolean						invert;
 
-	private Texture						font			= null;
 
 	private int							mode			= 0;
 	private Object3D					plane;
@@ -95,9 +83,11 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private float						animateSeconds	= 0f;
 
 	private int							animation		= -1;
-	private float						speed			= 1f;
+	private float						speed			= 2f;
 
 	private Object3D					dummy;
+
+	private float	rotation;
 
 	public ImageTargetsRenderer(ImageTargets activity) {
 
@@ -116,29 +106,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		sun = new Light(world);
 		sun.setIntensity(250, 250, 250);
 
-		cube = Primitives.getCube(30);
-		cube.calcTextureWrapSpherical();
-		// cube.setTexture("velas.jpg");
-		cube.strip();
-		cube.build();
-
-		plane = Primitives.getPlane(3, 70);
-		// plane.rotateX((float) 1.53);
-		plane.setCulling(false);
-		plane.setSpecularLighting(true);
-		plane.calcTextureWrap();
-
-		plane.setTexture("gaviota.jpg");
-		plane.strip();
-		plane.build();
-		// barco.rotateX(1.5f);
-		cube.rotateY(0.7853981763f);
-		// cube.rotateMesh();
-		// world.addObject(cube);
-		// world.addObject(cube);
-		world.addObject(plane);
 		cam = world.getCamera();
 
+		//Centramos la luz en la torre
 		SimpleVector sv = new SimpleVector();
 		sv.set(torre.getOrigin());
 		sv.z += 100;
@@ -151,8 +121,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		sphere.build();
 
 		sphere.setOrigin(sv);
-
 		world.addObject(sphere);
+		
 		sun.setPosition(sv);
 		sun.setAttenuation(400f);
 		MemoryHelper.compact();
@@ -179,60 +149,104 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	private void loadObjects() {
 
-		Texture.defaultTo4bpp(true);
-		MtlTextureLoader.loadTexturesFromAssets("torrebasemat.mtl", mActivity.getAssets());
 		
+		torre = loadTorre();
+		world.addObject(torre);
+		
+		dummy = torre.createDummyObj();
+		loadGaviotas();
+		
+		
+		Object3D root = gaviota.getRoot();
+		dummy.addChild(root);
+		dummy.translate(0, 20f, 0);
+		root.translate(30f, 0, 100);
+		
+		//root.setOrigin(torre.getTransformedCenter());
+		//root.translate(20f, 0, 0f);
+		//Objetos debug
+		cube = Primitives.getCube(10);
+		cube.calcTextureWrapSpherical();
+		cube.strip();
+		cube.build();
+		cube.rotateY(0.7853981763f);
+
+		cube.setOrigin(torre.getTransformedCenter());
+		
+		//world.addObject(cube);
+		Texture grass = new Texture(mActivity.getResources().getDrawable(R.drawable.grass));
+		TextureManager.getInstance().addTexture("herba.jpg", grass);
+		
+		grass.setClamping(true);
+		plane = Primitives.getPlane(3, 60);
+		plane.setCulling(false);
+		plane.rotateX((float) Math.PI);
+		plane.setSpecularLighting(true);
+		plane.setTexture("herba.jpg");
+		plane.strip();
+		plane.build();
+		
+		
+		world.addObject(plane);
+		
+	}
+
+	private void loadGaviotas() {
 		Texture texture = new Texture(mActivity.getResources().getDrawable(R.drawable.gaviota));
 		texture.keepPixelData(true);
 		TextureManager.getInstance().addTexture("gaviota.jpg", texture);
 
-		// torre =
-		// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torrebase),
-		// mActivity.getResources().openRawResource(R.raw.torrebasemat),
-		// 20.0f));
-		torre = Loader.loadSerializedObject(mActivity.getResources().openRawResource(R.raw.torre));
-		torre.scale(2.0f);
-		torre.compile();
-		torre.rotateX(-(float) Math.PI / 2);
-		// torreSingle.rotateMesh();
-		torre.build();
-		torre.setRotationPivot(SimpleVector.ORIGIN);
-		torre.translate(new SimpleVector(0.0f, +20.f, 0.0f));
-		world.addObject(torre);
 		dummy = torre.createDummyObj();
 		try {
 			gaviota = BonesIO.loadGroup(mActivity.getResources().openRawResource(R.raw.gaviota));
 			// if (MESH_ANIM_ALLOWED)
 			createMeshKeyFrames();
-			gaviota.getRoot().scale(2.0f);
-			gaviota.getRoot().rotateY((float) Math.PI);
-			gaviota.getRoot().rotateX((float) (-Math.PI / 2));
-			gaviota.getRoot().rotateZ((float) Math.PI);
-			gaviota.setSkeletonPose(new SkeletonPose(gaviota.get(0).getSkeleton()));
+			gaviota.addToWorld(world);
+			//gaviota.setSkeletonPose(new SkeletonPose(gaviota.get(0).getSkeleton()));
 			for (Animated3D a : gaviota) {
 				a.setTexture("gaviota.jpg");
-				a.rotateMesh();
-				a.translate(10.f, 20.0f, 0.0f);
+				//a.rotateX(-(float) Math.PI/2);
+				a.scale(1.0f);
+				///a.rotateMesh();
+				a.discardMeshData();
+				a.build();
 			}
+			
 			animation = 1;
-
-			gaviota.getRoot().setRotationPivot(dummy.getCenter());
-
-			gaviota.getRoot().rotateY((float) Math.PI / 2);
+			Object3D root = gaviota.getRoot();
+			
+		//	root.scale(10.0f);
+		//	gaviota.getRoot().rotateY((float) (Math.PI));
+		//	gaviota.getRoot().rotateX(-(float) (Math.PI/2));
+			root.rotateX(-1.57f);
 			// addGaviota();
 
-			gaviota.addToWorld(world);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
 
+	private Object3D loadTorre() {
+		Texture.defaultTo4bpp(true);
+		MtlTextureLoader.loadTexturesFromAssets("torrebasemat.mtl", mActivity.getAssets());
+		
+			Object3D torreSingle = Loader.loadSerializedObject(mActivity.getResources().openRawResource(R.raw.torre));
+			//Para que se vea
+			torreSingle.scale(2.0f);
+			torreSingle.rotateX(-(float) Math.PI / 2);
+			//torreSingle.rotateMesh();
+			//Rotamos la torre para que salga derecha
+			torreSingle.build();			
+			torreSingle.setRotationPivot(SimpleVector.ORIGIN);
+			torreSingle.translate(new SimpleVector(0.0f, +20.f, 0.0f));
+		
+		return torreSingle;
+	}
+
 	private void createMeshKeyFrames() {
-		Config.maxAnimationSubSequences = gaviota.getSkinClipSequence().getSize() + 1; // +1
-																						// for
-																						// whole
-																						// sequence
+		
+		Config.maxAnimationSubSequences = gaviota.getSkinClipSequence().getSize() + 1; // +1 for whole sequence
 
 		int keyframeCount = 0;
 		final float deltaTime = 0.2f; // max time between frames
@@ -328,8 +342,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			animateSeconds = 0f;
 		}
 
-		dummy.rotateY(0.001f * animateSeconds);
-		gaviota.getRoot().rotateY(0.001f * animateSeconds);
+		//dummy.rotateY(0.001f * animateSeconds);
+		//gaviota.getRoot().rotateY(0.001f * animateSeconds);
 
 		// Update render view (projection matrix and viewport) if needed:
 		mActivity.updateRenderView();
@@ -339,18 +353,13 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (mARHandler.isTracking()) {
 			if (mode == 1) {
-				torre.rotateX(-0.01f);
+				//gaviota.getRoot().rotateX(-0.01f);
 			}
-			// fb.clear(back);
+			if(mode == 2){
+				dummy.rotateZ(0.05f);
+			}
 			world.renderScene(fb);
 			world.draw(fb);
-
-			// DebugLog.LOGD("Barco: " + cube.getTransformedCenter().x + ", " +
-			// cube.getTransformedCenter().y + ", " +
-			// cube.getTransformedCenter().z);
-
-			// DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " +
-			// cam.getPosition().y + ", " + cam.getPosition().z);
 			fb.display();
 		}
 
@@ -401,13 +410,6 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			break;
 
 		}
-		//
-		// for(int i=0;i<barco.length;i++){
-		// barco[i].setVisibility(invert);
-		// }
-		// for(int i=0;i<torre.length;i++){
-		// torre[i].setVisibility(!invert);
-		// }
 	}
 
 	public void updateRendering(int mScreenWidth, int mScreenHeight) {

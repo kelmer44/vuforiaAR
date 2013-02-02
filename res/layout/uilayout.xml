@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/turnxplus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="turn x+" />
+
+    <Button
+        android:id="@+id/moveleft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="move lt" />
+
+    <Button
+        android:id="@+id/movedn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/moveleft"
+        android:text="move dn" />
+
+    <Button
+        android:id="@+id/moveright"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/movedn"
+        android:text="move rt" />
+
+    <Button
+        android:id="@+id/moveup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/movedn"
+        android:layout_toLeftOf="@+id/moveright"
+        android:text="move up" />
+
+    <Button
+        android:id="@+id/moveback"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/moveleft"
+        android:layout_alignParentLeft="true"
+        android:text="move b" />
+
+    <Button
+        android:id="@+id/movefw"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/moveright"
+        android:layout_alignRight="@+id/moveright"
+        android:text="move f" />
+
+    <Button
+        android:id="@+id/turnxmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/turnyplus"
+        android:text="turn x-" />
+
+    <Button
+        android:id="@+id/turnymin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="turn y-" />
+
+    <Button
+        android:id="@+id/turnyplus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/turnymin"
+        android:layout_alignParentRight="true"
+        android:text="turn y+" />
+
+    <Button
+        android:id="@+id/scaleplus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="scale +" />
+
+    <Button
+        android:id="@+id/scalemin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/scaleplus"
+        android:layout_toLeftOf="@+id/moveup"
+        android:text="scale -" />
+
+</RelativeLayout>
