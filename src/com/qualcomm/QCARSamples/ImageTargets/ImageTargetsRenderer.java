@@ -74,7 +74,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private Camera						cam;
 
 
-	private int							mode			= 0;
+	private int							mode			= 2;
 	private Object3D					plane;
 
 	private AnimatedGroup				gaviota;
@@ -127,7 +127,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		//world.addObject(sphere);
 		
 		sun.setPosition(sv);
-		sun.setAttenuation(400f);
+		sun.setAttenuation(500f);
 		MemoryHelper.compact();
 	}
 
@@ -187,7 +187,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		plane.setCulling(false);
 		plane.rotateX((float) Math.PI);
 		plane.setSpecularLighting(true);
-		plane.setTexture("herba.jpg");
+		plane.setTexture("pedrasdiante.jpg");
 		plane.strip();
 		plane.build();
 		
@@ -367,12 +367,15 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (mARHandler.isTracking()) {
 			if (mode == 1) {
-				//plane.rotateX(0.02f);
+				plane.translate(0,0,-0.1f);
+				DebugLog.LOGD("plane pos: " + plane.getTransformedCenter());
 				//gaviota.getRoot().rotateX(-0.01f);
 			}
 			if(mode == 0){
-				dummy.rotateZ(0.05f);
+				plane.translate(0,0,+0.1f);
+				DebugLog.LOGD("plane pos: " + plane.getTransformedCenter());
 			}
+			dummy.rotateZ(0.05f);
 			world.renderScene(fb);
 			world.draw(fb);
 			fb.display();
@@ -421,8 +424,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			mode = 2;
 			break;
 		case 2:
+			mode = 3;
+			break;
+		case 3:
 			mode = 0;
 			break;
+
 
 		}
 	}
