@@ -48,6 +48,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	private static final int			GRANULARITY		= 25;
 
+	private static final float			PLANE_WIDTH 		= 130f;
+	private static final float 			PLANE_HEIGHT		= 100f;
+	
 	private QCARFrameHandler			mARHandler		= null;
 	private FrameBuffer					fb				= null;
 	private World						world			= null;
@@ -174,11 +177,13 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		cube.setOrigin(torre.getTransformedCenter());
 		
 		//world.addObject(cube);
-		Texture grass = new Texture(mActivity.getResources().getDrawable(R.drawable.grass));
+		Texture grass = new Texture(mActivity.getResources().getDrawable(R.drawable.grass01));
 		TextureManager.getInstance().addTexture("herba.jpg", grass);
 		
-		grass.setClamping(true);
-		plane = Primitives.getPlane(3, 60);
+		grass.setClamping(false);
+		
+		plane = createPlane(PLANE_WIDTH, PLANE_HEIGHT);
+		//plane = Primitives.getPlane(3, 60);
 		plane.setCulling(false);
 		plane.rotateX((float) Math.PI);
 		plane.setSpecularLighting(true);
@@ -188,6 +193,15 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		
 		
 		world.addObject(plane);
+		
+	}
+
+	private static Object3D createPlane(float planeWidth, float planeHeight) {
+		Object3D plane = new Object3D(2);
+		float repeat = 4.0f;
+		plane.addTriangle(new SimpleVector(-planeWidth,planeHeight,0), 0f, 0f, new SimpleVector(planeWidth,planeHeight,0),repeat, 0f, new SimpleVector(-planeWidth,-planeHeight,0), 0f, repeat);
+		plane.addTriangle(new SimpleVector(planeWidth,planeHeight,0), repeat, 0f, new SimpleVector(planeWidth,-planeHeight,0), repeat, repeat, new SimpleVector(-planeWidth,-planeHeight,0), 0, repeat);
+		return plane;
 		
 	}
 
@@ -353,6 +367,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (mARHandler.isTracking()) {
 			if (mode == 1) {
+				plane.rotateX(0.02f);
 				//gaviota.getRoot().rotateX(-0.01f);
 			}
 			if(mode == 2){
