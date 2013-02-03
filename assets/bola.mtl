@@ -1,0 +1,48 @@
+newmtl ID30SG
+illum 4
+Kd 1.00 0.79 0.36
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl ID30SG1
+illum 4
+Kd 0.82 0.56 0.00
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl _4V_icosa_faceSG
+illum 4
+Kd 0.26 0.26 0.26
+Ka 0.20 0.20 0.20
+Tf 0.71 0.71 0.71
+Ni 1.00
+newmtl _4V_icosa_faceSG1
+illum 4
+Kd 0.70 0.82 0.70
+Ka 0.20 0.20 0.20
+Tf 0.40 0.40 0.40
+Ni 1.00
+newmtl pasted__ID30SG
+illum 4
+Kd 1.00 0.79 0.36
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl pasted__ID30SG1
+illum 4
+Kd 0.82 0.56 0.00
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl pasted___4V_icosa_faceSG
+illum 4
+Kd 0.26 0.26 0.26
+Ka 0.20 0.20 0.20
+Tf 0.71 0.71 0.71
+Ni 1.00
+newmtl pasted___4V_icosa_faceSG1
+illum 4
+Kd 0.70 0.82 0.70
+Ka 0.20 0.20 0.20
+Tf 0.40 0.40 0.40
+Ni 1.00

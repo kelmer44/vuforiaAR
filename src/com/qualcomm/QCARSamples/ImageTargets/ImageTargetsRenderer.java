@@ -75,7 +75,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private Camera						cam;
 
 
-	private int							mode			= 2;
+	private int							mode			= 0;
 	private Object3D					plane;
 
 	private AnimatedGroup				gaviota;
@@ -96,6 +96,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private MediaPlayer	mMediaPlayer;
 
 	private float	sinMovement;
+
+	private Object3D	bola;
 
 	public ImageTargetsRenderer(ImageTargets activity) {
 
@@ -174,6 +176,18 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		torre = loadTorre();
 		world.addObject(torre);
 		
+		
+		try {
+			bola = Object3D.mergeAll(Loader.loadOBJ(mActivity.getAssets().open("bola.obj"), mActivity.getAssets().open("bola.mtl"), 5.0f));
+			bola.translate(0, -70, 60);
+			world.addObject(bola);
+			bola.setVisibility(false);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		dummy = torre.createDummyObj();
 		loadGaviotas();
 		
@@ -205,7 +219,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		plane.setCulling(false);
 		plane.rotateX((float) Math.PI);
 		plane.setSpecularLighting(true);
-		plane.setTexture("pedrasdiante.jpg");
+		plane.setTexture("herba.jpg");
 		plane.strip();
 		plane.build();
 		
@@ -369,6 +383,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			}
 			float index = animateSeconds / clipTime;
 			gaviota.animateSkin(index, animation);
+			
+			
 
 		} else {
 			animateSeconds = 0f;
@@ -388,18 +404,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			
 			mMediaPlayer.start();
 			
-			if (mode == 1) {
-				plane.translate(0,0,-0.1f);
-				DebugLog.LOGD("plane pos: " + plane.getTransformedCenter());
-				//gaviota.getRoot().rotateX(-0.01f);
-			}
-			if(mode == 0){
-				plane.translate(0,0,+0.1f);
-				DebugLog.LOGD("plane pos: " + plane.getTransformedCenter());
-			}
+
 			sinMovement +=0.1f;
 			gaviota.getRoot().translate(0, 0, (float) (0.5*Math.sin(sinMovement)));
 			dummy.rotateZ(0.05f);
+			bola.rotateZ(0.05f);
+			
 			world.renderScene(fb);
 			world.draw(fb);
 			fb.display();
@@ -446,9 +456,14 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		switch (mode) {
 		case 0:
 			mode = 1;
+			torre.setVisibility(false);
+			bola.setVisibility(true);
 			break;
 		case 1:
 			mode = 2;
+
+			torre.setVisibility(true);
+			bola.setVisibility(false);
 			break;
 		case 2:
 			mode = 3;
