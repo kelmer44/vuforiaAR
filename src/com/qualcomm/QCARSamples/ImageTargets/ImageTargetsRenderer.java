@@ -34,6 +34,7 @@ import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
 import com.threed.jpct.Logger;
+import com.threed.jpct.Matrix;
 import com.threed.jpct.Mesh;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
@@ -50,7 +51,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	private static final int			GRANULARITY		= 25;
 
 	private static final float			PLANE_WIDTH 		= 130f;
-	private static final float 			PLANE_HEIGHT		= 100f;
+	private static final float 			PLANE_HEIGHT		= 90f;
 	
 	private QCARFrameHandler			mARHandler		= null;
 	private FrameBuffer					fb				= null;
@@ -352,6 +353,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		cam.setFOV(mARHandler.getFov());
 		cam.setYFOV(mARHandler.getFovy());
+//		Matrix m = new Matrix();
+//		m.setDump(mARHandler.getModelViewMat());
+//		cam.setBack(m);
 		cam.setOrientation(mARHandler.getCameraDirectionVector(), mARHandler.getCameraUpVector());
 		cam.setPosition(mARHandler.getCameraPosition());
 
@@ -397,11 +401,11 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		mActivity.updateRenderView();
 		mARHandler.update();
 
-		updateCamera();
 
 		if (mARHandler.isTracking()) {
 			
-			
+
+			updateCamera();
 			mMediaPlayer.start();
 			
 
