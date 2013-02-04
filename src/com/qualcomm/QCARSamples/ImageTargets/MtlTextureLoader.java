@@ -44,7 +44,7 @@ public class MtlTextureLoader {
 
 	public static boolean loadTexturesFromAssets(String mtlFile, String path, AssetManager mngr){
 		try {
-			List<String> fileNames = readFileNames(mngr.open(path + "/" + mtlFile));
+			List<String> fileNames = readFileNames(mngr.open(mtlFile));
 			for(int i =0; i<fileNames.size(); i++){
 				Texture t = new Texture(mngr.open(fileNames.get(i)));
 				t.compress();
