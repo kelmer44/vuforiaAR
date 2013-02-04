@@ -39,8 +39,12 @@ public class MtlTextureLoader {
 	}
 	
 	public static boolean loadTexturesFromAssets(String mtlFile, AssetManager mngr){
+		return loadTexturesFromAssets(mtlFile, ".", mngr);
+	}
+
+	public static boolean loadTexturesFromAssets(String mtlFile, String path, AssetManager mngr){
 		try {
-			List<String> fileNames = readFileNames(mngr.open(mtlFile));
+			List<String> fileNames = readFileNames(mngr.open(path + "/" + mtlFile));
 			for(int i =0; i<fileNames.size(); i++){
 				Texture t = new Texture(mngr.open(fileNames.get(i)));
 				t.compress();
@@ -57,5 +61,4 @@ public class MtlTextureLoader {
 			return false;
 		}
 	}
-	
 }

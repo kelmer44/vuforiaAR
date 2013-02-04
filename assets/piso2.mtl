@@ -1,0 +1,42 @@
+newmtl ID12SG
+illum 4
+Kd 0.27 0.51 0.71
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl ID20SG
+illum 4
+Kd 1.00 0.89 0.77
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl ID28SG
+illum 4
+Kd 0.39 0.58 0.93
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl ID41SG
+illum 4
+Kd 0.39 0.58 0.93
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl ID66SG
+illum 4
+Kd 0.39 0.58 0.93
+Ka 0.20 0.20 0.20
+Tf 0.50 0.50 0.50
+Ni 1.00
+newmtl SketchUpSG
+illum 4
+Kd 1.00 1.00 1.00
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00
+newmtl SketchUpSG1
+illum 4
+Kd 1.00 1.00 1.00
+Ka 0.20 0.20 0.20
+Tf 1.00 1.00 1.00
+Ni 1.00

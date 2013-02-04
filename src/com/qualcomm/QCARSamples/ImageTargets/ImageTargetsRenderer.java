@@ -100,6 +100,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	private Object3D	bola;
 
+	private Object3D	piso;
+
 	public ImageTargetsRenderer(ImageTargets activity) {
 
 		this.mActivity = activity;
@@ -183,6 +185,14 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			bola.translate(0, -70, 60);
 			world.addObject(bola);
 			bola.setVisibility(false);
+			
+			piso = Object3D.mergeAll(Loader.loadOBJ(mActivity.getAssets().open("piso2.obj"), mActivity.getAssets().open("piso2.mtl"), 25.0f));
+			piso.setOrigin(new SimpleVector(5, -30, 40));
+			piso.rotateX(-(float)Math.PI/2);
+			piso.rotateZ((float)Math.PI/2);
+			world.addObject(piso);
+			piso.build();
+			piso.setVisibility(false);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -276,7 +286,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	private Object3D loadTorre() {
 		Texture.defaultTo4bpp(true);
-		MtlTextureLoader.loadTexturesFromAssets("torrebasemat.mtl", mActivity.getAssets());
+		MtlTextureLoader.loadTexturesFromAssets("torrebasemat.mtl", "torreTex", mActivity.getAssets());
 		
 			Object3D torreSingle = Loader.loadSerializedObject(mActivity.getResources().openRawResource(R.raw.torre));
 			//Para que se vea
@@ -460,17 +470,22 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		switch (mode) {
 		case 0:
 			mode = 1;
-			torre.setVisibility(false);
-			bola.setVisibility(true);
+			torre.setVisibility(true);
+			bola.setVisibility(false);
+			piso.setVisibility(false);
 			break;
 		case 1:
 			mode = 2;
 
-			torre.setVisibility(true);
-			bola.setVisibility(false);
+			torre.setVisibility(false);
+			bola.setVisibility(true);
+			piso.setVisibility(false);
 			break;
 		case 2:
-			mode = 3;
+			mode = 3;			
+			torre.setVisibility(false);
+			bola.setVisibility(false);
+			piso.setVisibility(true);
 			break;
 		case 3:
 			mode = 0;
