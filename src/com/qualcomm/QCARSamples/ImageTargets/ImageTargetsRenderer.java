@@ -187,7 +187,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			bola.setVisibility(false);
 			
 			piso = Object3D.mergeAll(Loader.loadOBJ(mActivity.getAssets().open("piso2.obj"), mActivity.getAssets().open("piso2.mtl"), 25.0f));
-			piso.setOrigin(new SimpleVector(5, -30, 40));
+			piso.setOrigin(new SimpleVector(5, -30, 39));
 			piso.rotateX(-(float)Math.PI/2);
 			piso.rotateZ((float)Math.PI/2);
 			world.addObject(piso);
