@@ -237,7 +237,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		
 		grass.setClamping(false);
 		
-		plane = createPlane(PLANE_WIDTH*2, PLANE_HEIGHT*2);
+		plane = createPlane(PLANE_WIDTH, PLANE_HEIGHT);
 		//plane = Primitives.getPlane(1, 160);
 		plane.setCulling(false);
 		plane.rotateX((float) Math.PI);
@@ -249,9 +249,9 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		plane.strip();
 		plane.build();
 		
-		plane.translate(new SimpleVector(0.0f, -20.f, 0.0f));
+		plane.translate(new SimpleVector(0.0f, -30.f, 0.0f));
 		
-		//world.addObject(plane);
+		world.addObject(plane);
 		
 		//Elementos para facer o mapping
 			
@@ -262,8 +262,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		plano.setAdditionalColor(RGBColor.BLACK);
 		plano.strip();
 		plano.build();
-		plano.translate(new SimpleVector(0.0f, -20.f, 0.0f));
+		plano.translate(new SimpleVector(0.0f, -30.f, 0.0f));
+		
 		world.addObject(plano);
+		
 		//try {
 			shader = new GLSLShader(Loader.loadTextFile(mActivity.getResources().openRawResource(R.raw.defaultvertexshader)), Loader.loadTextFile(mActivity.getResources().openRawResource(R.raw.defaultfragmentshader)));
 		//} catch (IOException e) {
