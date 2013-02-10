@@ -13,132 +13,165 @@
 
 package com.qualcomm.QCARSamples.ImageTargets;
 
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-import android.content.res.Resources;
+import raft.jpct.bones.Animated3D;
+import raft.jpct.bones.AnimatedGroup;
+import raft.jpct.bones.BonesIO;
+import raft.jpct.bones.SkinClip;
+import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 
-import com.qualcomm.QCAR.QCAR;
+import com.threed.jpct.Animation;
 import com.threed.jpct.Camera;
+import com.threed.jpct.Config;
 import com.threed.jpct.FrameBuffer;
 import com.threed.jpct.Light;
 import com.threed.jpct.Loader;
+import com.threed.jpct.Logger;
+import com.threed.jpct.Mesh;
 import com.threed.jpct.Object3D;
 import com.threed.jpct.Primitives;
 import com.threed.jpct.RGBColor;
 import com.threed.jpct.SimpleVector;
 import com.threed.jpct.Texture;
+import com.threed.jpct.TextureInfo;
 import com.threed.jpct.TextureManager;
 import com.threed.jpct.World;
-import com.threed.jpct.util.BitmapHelper;
 import com.threed.jpct.util.MemoryHelper;
 import com.threed.jpct.GLSLShader;
 
-
-import java.lang.reflect.Field;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
-import android.view.ScaleGestureDetector.OnScaleGestureListener;
-
 /** The renderer class for the ImageTargets sample. */
 public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
-	private FrameBuffer	fb			= null;
-	private World		world		= null;
 
-	private RGBColor	back		= new RGBColor(0, 0, 0, 255);
+	private static final int			GRANULARITY		= 25;
 
-	private Object3D	cube		= null;
-	private Object3D	barco		= null;
-	private Object3D	torre		= null;
-	private Object3D	plane		= null;
-	private GLSLShader  shader		= null;
-	private int			fps			= 0;
+	private static final float			PLANE_WIDTH 		= 130f;
+	private static final float 			PLANE_HEIGHT		= 90f;
+	
+	private QCARFrameHandler			mARHandler		= null;
+	private FrameBuffer					fb				= null;
+	private World						world			= null;
 
-	private Light		sun			= null;
+	private Object3D					cube			= null;
+	private Object3D					barco			= null;
+	private Object3D					torre			= null;
 
-	private float		touchTurn	= 0;
-	private float		touchTurnUp	= 0;
+	private Light						sun				= null;
 
-	private float		xpos		= -1;
-	private float		ypos		= -1;
+	private float						touchTurn		= 0;
+	private float						touchTurnUp		= 0;
 
-	public boolean		mIsActive	= false;
+	private float						xpos			= -1;
+	private float						ypos			= -1;
 
-	private boolean		init		= false;
-
-	private float		modelViewMat[];
-	private float		projectionMatrix[];
+	public boolean						mIsActive		= false;
 
 	/** Reference to main activity **/
-	public ImageTargets	mActivity;
-	private Camera		cam;
-	private float		rotate;
-	private boolean		invert;
-	private boolean		showScene	= false;
-	private float		fov;
-	private int			screenWidth;
-	private int			screenHeight;
-	private float		prevyfov;
+	public ImageTargets					mActivity;
+	private Camera						cam;
 
-	private Texture		font		= null;
-	private float	fovy;
 
-	/** Native function for initializing the renderer. */
-	public native void initRendering();
+	private int							mode			= 0;
+	private Object3D					plane;
 
-	/** Native function to update the renderer. */
-	public native void updateRendering(int width, int height);
+	private AnimatedGroup				gaviota;
 
-	public void updateModelviewMatrix(float mat[]) {
+	private final List<AnimatedGroup>	gaviotas		= new LinkedList<AnimatedGroup>();
+	private long						frameTime		= System.currentTimeMillis();
+	private long						aggregatedTime	= 0;
 
-		modelViewMat = mat;
-	}
+	private float						animateSeconds	= 0f;
 
-	public void updateProjMatrix(float mat[]) {
+	private int							animation		= -1;
+	private float						speed			= 2f;
 
-		projectionMatrix = mat;
-	}
+	private Object3D					dummy;
 
-	public void isTracking(boolean is) {
-		showScene = is;
-	}
+	private float	rotation;
 
-	public void setFov(float fov) {
-		DebugLog.LOGD("FOV: " + fov);
-		this.fov = fov;
-	}
+	private MediaPlayer	mMediaPlayer;
 
-	public void setFovy(float fov) {
-		DebugLog.LOGD("FOVY: " + fovy);
-		this.fovy = fov;
-	}
+	private float	sinMovement;
+
+	private Object3D	bola;
+
+	private Object3D	piso;
 	
+	//Elementos para facer o mapping
+	private Object3D	plano;
+	
+	private Texture 	texturaMapping;
+	
+	private GLSLShader shader = null;
 	
 	public ImageTargetsRenderer(ImageTargets activity) {
 
 		this.mActivity = activity;
-		modelViewMat = new float[16];
-		projectionMatrix = new float[16];
+		mARHandler = new QCARFrameHandler();
+		
+
+		mMediaPlayer = MediaPlayer.create(mActivity.getApplicationContext(), R.raw.seagull);
+		try {
+			mMediaPlayer.prepare();
+		} catch (IllegalStateException e) {
+			DebugLog.LOGE("Could not load sound");
+		} catch (IOException e) {
+			DebugLog.LOGE("Could not load sound");
+		}
+
+		
+		initScene();
+		
+	}
+
+	private void initScene() {
+		world = new World();
+		world.setClippingPlanes(2f, 2500f);
+		world.setAmbientLight(50, 50, 50);
+
+		loadObjects();
+
+		sun = new Light(world);
+		sun.setIntensity(250, 250, 250);
+
+		cam = world.getCamera();
+
+		//Centramos la luz en la torre
+		SimpleVector sv = new SimpleVector();
+		sv.set(torre.getOrigin());
+		sv.z += 100;
+		sv.y -= 30;
+
+		Object3D sphere = Primitives.getSphere(5f);
+		sphere.calcTextureWrapSpherical();
+		sphere.setAdditionalColor(new RGBColor(255, 0, 0));
+		sphere.strip();
+		sphere.build();
+
+		sphere.setOrigin(sv);
+		//world.addObject(sphere);
+		
+		sun.setPosition(sv);
+		sun.setAttenuation(500f);
+		MemoryHelper.compact();
 	}
 
 	/** Called when the surface is created or recreated. */
+	@Override
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
 		DebugLog.LOGD("GLRenderer::onSurfaceCreated");
 
-		// Call native function to initialize rendering:
-		initRendering();
-
-		// Call QCAR function to (re)initialize rendering after first use
-		// or after OpenGL ES context was lost (e.g. after onPause/onResume):
-		QCAR.onSurfaceCreated();
+		mARHandler.onSurfaceCreated(gl, config);
 	}
 
-	
 	/** Called when the surface changed size. */
+	@Override
 	public void onSurfaceChanged(GL10 gl, int width, int height) {
 		DebugLog.LOGD("GLRenderer::onSurfaceChanged");
 		if (fb != null) {
@@ -146,219 +179,382 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		}
 		// fb = new FrameBuffer(gl, width,height);
 		fb = new FrameBuffer(1196, 897);
+
+		mARHandler.onSurfaceChanged(gl, width, height);
+	}
+
+	private void loadObjects() {
+
+		texturaMapping = new Texture(2048,2048, RGBColor.WHITE);
+		TextureManager.getInstance().addTexture("texMapeo", texturaMapping);
 		
-		// Call native function to update rendering when render surface
-		// parameters have changed:
-		updateRendering(width, height);
-
-		// Call QCAR function to handle render surface size changes:
-		QCAR.onSurfaceChanged(width, height);
-
-		if (!init) {
-			// Create a texture out of the icon...:-)
-//			Texture textureBarco = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.barcot)), 512, 512));
-//			TextureManager.getInstance().addTexture("barcot.jpg", textureBarco);
-//
-//			Texture textureVelas = new Texture(BitmapHelper.rescale(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.velas)), 1024, 1024));
-//			TextureManager.getInstance().addTexture("velas.jpg", textureVelas);
-			Texture[]		textures;
-			Texture.defaultTo4bpp(true);
-			textures = new Texture[15];
-			textures[0] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.murofachada2b)));
-			textures[0].enable4bpp(true);
-			textures[0].compress();
-			TextureManager.getInstance().addTexture("murofachada2b.jpg", textures[0]);
-
-			textures[1] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.rayasescaleiras)));
-			textures[1].compress();
-			TextureManager.getInstance().addTexture("rayasescaleiras.jpg", textures[1]);
-
-			textures[2] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.suelo)));
-			textures[2].compress();
-			TextureManager.getInstance().addTexture("suelo.jpg", textures[2]);
-
-			textures[3] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.casita1)));
-			textures[3].compress();
-			TextureManager.getInstance().addTexture("casita1.jpg", textures[3]);
-
-			textures[4] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.cristalescupula)));
-			textures[4].compress();
-			TextureManager.getInstance().addTexture("cristalescupula.jpg", textures[4]);
-			
-			textures[5] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.frontalescaleiras2)));
-			textures[5].compress();
-			TextureManager.getInstance().addTexture("frontalescaleiras2.jpg", textures[5]);	
+		torre = loadTorre();
+		world.addObject(torre);		
 		
-			textures[6] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.lateralcasita)));
-			textures[6].compress();
-			TextureManager.getInstance().addTexture("lateralcasita.jpg", textures[6]);	
+		try {
+			bola = Object3D.mergeAll(Loader.loadOBJ(mActivity.getAssets().open("bola.obj"), mActivity.getAssets().open("bola.mtl"), 5.0f));
+			bola.translate(0, -70, 60);
+			world.addObject(bola);
+			bola.setVisibility(false);
 			
-			textures[7] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.muroforaretocado)));
-			textures[7].compress();
-			TextureManager.getInstance().addTexture("muroforaretocado.jpg", textures[7]);	
+			piso = Object3D.mergeAll(Loader.loadOBJ(mActivity.getAssets().open("piso2.obj"), mActivity.getAssets().open("piso2.mtl"), 25.0f));
+			piso.setOrigin(new SimpleVector(5, -30, 39));
+			piso.rotateX(-(float)Math.PI/2);
+			piso.rotateZ((float)Math.PI/2);
+			world.addObject(piso);
+			piso.build();
+			piso.setVisibility(false);
 			
-			textures[8] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.paredeint03)));
-			textures[8].compress();
-			TextureManager.getInstance().addTexture("paredeint03.jpg", textures[8]);	
-			
-			textures[9] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.placa)));
-			textures[9].compress();
-			TextureManager.getInstance().addTexture("placa.jpg", textures[9]);	
-			
-			textures[10] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.placa3)));
-			textures[10].compress();
-			TextureManager.getInstance().addTexture("placa3.jpg", textures[10]);	
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
-			textures[11] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.portaentrada1)));
-			textures[11].compress();
-			TextureManager.getInstance().addTexture("portaentrada1.jpg", textures[11]);	
-			
-			textures[12] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.portaentrada2)));
-			textures[12].compress();
-			TextureManager.getInstance().addTexture("portaentrada2.jpg", textures[12]);	
-			
-			textures[13] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.sueloentrada)));
-			textures[13].compress();
-			TextureManager.getInstance().addTexture("sueloentrada.jpg", textures[13]);	
-			
-			textures[14] = new Texture(BitmapHelper.convert(mActivity.getResources().getDrawable(R.drawable.telladocasita)));
-			textures[14].compress();
-			TextureManager.getInstance().addTexture("telladocasita.jpg", textures[14]);	
+		
+		dummy = Object3D.createDummyObj();
+		loadGaviotas();
+		
+		
+		Object3D root = gaviota.getRoot();
+		dummy.addChild(root);
+		dummy.translate(0, 20f, 0);
+		root.translate(30f, 0, 100);
+		
+		//root.setOrigin(torre.getTransformedCenter());
+		//root.translate(20f, 0, 0f);
+		//Objetos debug
+		cube = Primitives.getCube(10);
+		cube.calcTextureWrapSpherical();
+		cube.strip();
+		cube.build();
+		cube.rotateY(0.7853981763f);
 
-			world = new World();
-			world.setAmbientLight(50, 50, 50);
-			sun = new Light(world);
-			sun.setIntensity(250, 250, 250);
-						
-			plane = Primitives.getPlane(1, 50);
-
-						
+		cube.setOrigin(torre.getTransformedCenter());
+		
+		//world.addObject(cube);
+		Texture grass = new Texture(mActivity.getResources().getDrawable(R.drawable.grass01));
+		TextureManager.getInstance().addTexture("herba.jpg", grass);
+		
+		grass.setClamping(false);
+		
+		plane = createPlane(PLANE_WIDTH*2, PLANE_HEIGHT*2);
+		//plane = Primitives.getPlane(1, 160);
+		plane.setCulling(false);
+		plane.rotateX((float) Math.PI);
+		plane.setSpecularLighting(true);
+		//plane.setAdditionalColor(RGBColor.BLACK);
+		TextureInfo ti = new TextureInfo(TextureManager.getInstance().getTextureID("texMapeo"));
+		ti.add(TextureManager.getInstance().getTextureID("herba.jpg"), TextureInfo.MODE_MODULATE);
+		plane.setTexture(ti);
+		plane.strip();
+		plane.build();
+		
+		plane.translate(new SimpleVector(0.0f, -20.f, 0.0f));
+		
+		//world.addObject(plane);
+		
+		//Elementos para facer o mapping
 			
-			 cube = Primitives.getCube(30);
-			 cube.calcTextureWrapSpherical();
-			 cube.setTexture("telladocasita.jpg");
-			 cube.strip();
-			 cube.build();
-			//barco = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.barco), mActivity.getResources().openRawResource(R.raw.barcomat), 2.0f));
-			
-			// barco.setTransparency(-1);
-			// barco =
-			// Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.vance),
-			// mActivity.getResources().openRawResource(R.raw.vancemat), 1.0f));
-			torre = Object3D.mergeAll(Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torresola), mActivity.getResources().openRawResource(R.raw.torremat), 20.0f));
-			torre.rotateX(0.7853981763f);
-			torre.setCulling(false);
-			torre.rotateMesh();
-			
-			Resources res = mActivity.getResources();
-//System.out.println(Loader.loadTextFile(res.openRawResource(R.raw.vertex)));
-			shader = new GLSLShader(Loader.loadTextFile(res.openRawResource(R.raw.defaultvertexshader)), Loader.loadTextFile(res.openRawResource(R.raw.defaultfragmentshader)));
-			plane.setShader(shader);
-			
-			plane.build();
-			plane.strip();
+		
+		plano = createPlane(PLANE_WIDTH, PLANE_HEIGHT);
+		//plano = Primitives.getPlane(1,160);
+		plano.rotateX((float) Math.PI);
+		plano.setAdditionalColor(RGBColor.BLACK);
+		plano.strip();
+		plano.build();
+		plano.translate(new SimpleVector(0.0f, -20.f, 0.0f));
+		world.addObject(plano);
+		//try {
+			shader = new GLSLShader(Loader.loadTextFile(mActivity.getResources().openRawResource(R.raw.defaultvertexshader)), Loader.loadTextFile(mActivity.getResources().openRawResource(R.raw.defaultfragmentshader)));
+		//} catch (IOException e) {
+		//	e.printStackTrace();
+		//	System.out.println("Caca de la vaca");
+		//}
+		
+		
+		torre.setShader(shader);
+		plane.setShader(shader);
+		/*bola.setShader(shader);
+		piso.setShader(shader);	*/	
+		//torre.setRenderHook(shader);
+		
+		shader.setStaticUniform("textureUnit0", 0);
+		shader.setStaticUniform("textureUnit1", 1);
+		
+		torre.build();
+		torre.compile();
+		torre.strip();
+		
+		plane.build();
+		plane.compile();
+		plane.strip();
+		/*
+		bola.build();
+		bola.compile();
+		bola.strip();
+		
+		piso.build();
+		piso.compile();
+		piso.strip();*/
+	}
 
-			// barco.rotateX(1.5f);
-			cube.rotateX(0.7853981763f);
-//			world.addObject(cube);
-			world.setClippingPlanes(2f, 2500f);
-//			barco.setOrigin(new SimpleVector(0, 0, 0));
-//			world.addObject(torre);
-			world.addObject(torre);
-			world.addObject(plane);
-			// world.addObjects(torre);io8 
-			cam = world.getCamera();
-			//cam.moveCamera(Camera.CAMERA_MOVEOUT, -3);
-//			cam.moveCamera(Camera.CAMERA_MOVEOUT, 10);
-//			cam.lookAt(cube.getTransformedCenter());
+	private static Object3D createPlane(float planeWidth, float planeHeight) {
+		Object3D plane = new Object3D(2);
+		float repeat = 4.0f;
+		plane.addTriangle(new SimpleVector(-planeWidth,planeHeight,0), 0f, 0f, new SimpleVector(planeWidth,planeHeight,0),repeat, 0f, new SimpleVector(-planeWidth,-planeHeight,0), 0f, repeat);
+		plane.addTriangle(new SimpleVector(planeWidth,planeHeight,0), repeat, 0f, new SimpleVector(planeWidth,-planeHeight,0), repeat, repeat, new SimpleVector(-planeWidth,-planeHeight,0), 0, repeat);
+		return plane;
+		
+	}
 
-			SimpleVector sv = new SimpleVector();
-			sv.set(torre.getTransformedCenter());
-			sv.z -= 20;
-			sun.setPosition(sv);	
-			MemoryHelper.compact();
+	private void loadGaviotas() {
+		Texture texture = new Texture(mActivity.getResources().getDrawable(R.drawable.gaviota));
+		texture.keepPixelData(true);
+		TextureManager.getInstance().addTexture("gaviota.jpg", texture);
 
-			init = true;
+		dummy = Object3D.createDummyObj();
+		try {
+			gaviota = BonesIO.loadGroup(mActivity.getResources().openRawResource(R.raw.gaviota));
+			// if (MESH_ANIM_ALLOWED)
+			createMeshKeyFrames();
+			gaviota.addToWorld(world);
+			//gaviota.setSkeletonPose(new SkeletonPose(gaviota.get(0).getSkeleton()));
+			for (Animated3D a : gaviota) {
+				a.setTexture("gaviota.jpg");
+				//a.rotateX(-(float) Math.PI/2);
+				a.scale(1.0f);
+				///a.rotateMesh();
+				a.discardMeshData();
+				a.build();
+			}
+			
+			animation = 1;
+			Object3D root = gaviota.getRoot();
+			
+		//	root.scale(10.0f);
+		//	gaviota.getRoot().rotateY((float) (Math.PI));
+		//	gaviota.getRoot().rotateX(-(float) (Math.PI/2));
+			root.rotateX(-1.57f);
+			// addGaviota();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
-	/** The native render function. */
-	public native void renderFrame();
-
-	public void setCameraMatrix(float[] modelViewMatrixFromVuforia) {
-
-		float x = modelViewMatrixFromVuforia[12];
-		float y = modelViewMatrixFromVuforia[13];
-		float z = modelViewMatrixFromVuforia[14];
-
-		//modelViewMatrixFromVuforia[12] = modelViewMatrixFromVuforia[13] = modelViewMatrixFromVuforia[14] = 0;
-		// StringBuffer str = new StringBuffer("MATRIX:\n");
-		// for (int i = 0; i < 4; i++) {
-		// for (int j = 0; j < 4; j++) {
-		// str.append("" + modelViewMatrixFromVuforia[4 * i + j] + " ");
-		// }
-		// str.append("\n");
-		// }
-		// DebugLog.LOGD(str.toString());
-		//
-		// DebugLog.LOGD("Translate: " + x + ", " + y + "," + z);
-
-		com.threed.jpct.Matrix mModelView = new com.threed.jpct.Matrix();
+	private Object3D loadTorre() {
+		Texture.defaultTo4bpp(true);
+		MtlTextureLoader.loadTexturesFromAssets("torrebasemat.mtl", "torreTex", mActivity.getAssets());
 		
-		mModelView.setDump(modelViewMatrixFromVuforia);
-		
-		//mProjection.setDump(projectionMatrix);
-		//mModelView = mModelView.invert();
-		// barco.setOrigin(new SimpleVector(x, y, z));
-		//cam.setPosition(-x, -y, -z);
-		
-		//cam.setYFOV(fov);
-		//cam.setBack(mModelView);
-		//cam.setPosition(x, y, z);
-		
-		//mModelView.rotateY(0.78f);
-		cam.setFOV(fov);	
-		cam.setYFOV(fovy);
-		
-		cam.setBack(mModelView);
-		//cam.setPosition(x, y, z);
-		
+			//Object3D torreSingle = Loader.loadSerializedObject(mActivity.getResources().openRawResource(R.raw.torre));
 			
+			Object3D[] torremultiple = Loader.loadOBJ(mActivity.getResources().openRawResource(R.raw.torrebase), mActivity.getResources().openRawResource(R.raw.torrebasemat), 10);
+			
+			for(int i = 0; i <  torremultiple.length;i++){
+				Object3D o = torremultiple[i];
+				TextureInfo ti = new TextureInfo(TextureManager.getInstance().getTextureID("texMapeo"));
+				ti.add(o.getPolygonManager().getPolygonTexture(1), TextureInfo.MODE_MODULATE);
+				o.setTexture(ti);
+			}
+			
+			Object3D torreSingle = Object3D.mergeAll(torremultiple);
+			//Para que se vea
+			torreSingle.scale(2.0f);
+			torreSingle.rotateX(-(float) Math.PI / 2);
+			//torreSingle.rotateMesh();
+			//Rotamos la torre para que salga derecha
+			torreSingle.build();			
+			torreSingle.setRotationPivot(SimpleVector.ORIGIN);
+			torreSingle.translate(new SimpleVector(0.0f, -20.f, 0.0f));
 		
+		return torreSingle;
+	}
 
-		//torre.setRotationMatrix(mModelView);
-		//torre.setOrigin(new SimpleVector(x, y, z));
-		//cube.setRotationMatrix(mModelView);
-		//cube.setOrigin(new SimpleVector(x, y , z));
+	private void createMeshKeyFrames() {
+		
+		Config.maxAnimationSubSequences = gaviota.getSkinClipSequence().getSize() + 1; // +1 for whole sequence
+
+		int keyframeCount = 0;
+		final float deltaTime = 0.2f; // max time between frames
+
+		for (SkinClip clip : gaviota.getSkinClipSequence()) {
+			float clipTime = clip.getTime();
+			int frames = (int) Math.ceil(clipTime / deltaTime) + 1;
+			keyframeCount += frames;
+		}
+
+		Animation[] animations = new Animation[gaviota.getSize()];
+		for (int i = 0; i < gaviota.getSize(); i++) {
+			animations[i] = new Animation(keyframeCount);
+			animations[i].setClampingMode(Animation.USE_CLAMPING);
+		}
+		// System.out.println("------------ keyframeCount: " + keyframeCount +
+		// ", mesh size: " + masterNinja.getSize());
+		int count = 0;
+
+		int sequence = 0;
+		for (SkinClip clip : gaviota.getSkinClipSequence()) {
+			float clipTime = clip.getTime();
+			int frames = (int) Math.ceil(clipTime / deltaTime) + 1;
+			float dIndex = 1f / (frames - 1);
+
+			for (int i = 0; i < gaviota.getSize(); i++) {
+				animations[i].createSubSequence(clip.getName());
+			}
+			// System.out.println(sequence + ": " + clip.getName() +
+			// ", frames: " + frames);
+			for (int i = 0; i < frames; i++) {
+				gaviota.animateSkin(dIndex * i, sequence + 1);
+
+				for (int j = 0; j < gaviota.getSize(); j++) {
+					Mesh keyframe = gaviota.get(j).getMesh().cloneMesh(true);
+					keyframe.strip();
+					animations[j].addKeyFrame(keyframe);
+					count++;
+					// System.out.println("added " + (i + 1) + " of " + sequence
+					// + " to " + j + " total: " + count);
+				}
+			}
+			sequence++;
+		}
+		for (int i = 0; i < gaviota.getSize(); i++) {
+			gaviota.get(i).setAnimationSequence(animations[i]);
+		}
+		gaviota.get(0).getSkeletonPose().setToBindPose();
+		gaviota.get(0).getSkeletonPose().updateTransforms();
+		gaviota.applySkeletonPose();
+		gaviota.applyAnimation();
+
+		Logger.log("created mesh keyframes, " + keyframeCount + "x" + gaviota.getSize());
+	}
+
+	public void updateCamera() {
+
+		cam.setFOV(mARHandler.getFov());
+		cam.setYFOV(mARHandler.getFovy());
+//		Matrix m = new Matrix();
+//		m.setDump(mARHandler.getModelViewMat());
+//		cam.setBack(m);
+		cam.setOrientation(mARHandler.getCameraDirectionVector(), mARHandler.getCameraUpVector());
+		cam.setPosition(mARHandler.getCameraPosition());
 
 	}
 
 	/** Called to draw the current frame. */
+	@Override
 	public void onDrawFrame(GL10 gl) {
 
 		if (!mIsActive)
 			return;
 
+		long now = System.currentTimeMillis();
+		aggregatedTime += (now - frameTime);
+		frameTime = now;
 
+		if (aggregatedTime > 1000) {
+			aggregatedTime = 0;
+		}
+
+		while (aggregatedTime > GRANULARITY) {
+			aggregatedTime -= GRANULARITY;
+			animateSeconds += GRANULARITY * 0.001f * speed;
+		}
+
+		if (animation > 0 && gaviota.getSkinClipSequence().getSize() >= animation) {
+			float clipTime = gaviota.getSkinClipSequence().getClip(animation - 1).getTime();
+			if (animateSeconds > clipTime) {
+				animateSeconds = 0;
+			}
+			float index = animateSeconds / clipTime;
+			gaviota.animateSkin(index, animation);
+			
+			
+
+		} else {
+			animateSeconds = 0f;
+		}
+
+		//dummy.rotateY(0.001f * animateSeconds);
+		//gaviota.getRoot().rotateY(0.001f * animateSeconds);
 
 		// Update render view (projection matrix and viewport) if needed:
 		mActivity.updateRenderView();
-		// Call our native function to render content
-		renderFrame();
+		mARHandler.update();
 
-		setCameraMatrix(modelViewMat);
-		
-		if (showScene) {
-			//fb.clear(back);
-				world.renderScene(fb);
-				world.draw(fb);
-				
-//				DebugLog.LOGD("Barco: " + cube.getTransformedCenter().x + ", " + cube.getTransformedCenter().y + ", " + cube.getTransformedCenter().z);
 
-//				DebugLog.LOGD("Cam: " + cam.getPosition().x + ", " + cam.getPosition().y + ", " + cam.getPosition().z);
-				fb.display();
+		if (mARHandler.isTracking()) {
+			
+
+			updateCamera();
+			mMediaPlayer.start();
+			
+
+			sinMovement +=0.1f;
+			gaviota.getRoot().translate(0, 0, (float) (0.5*Math.sin(sinMovement)));
+			dummy.rotateZ(0.05f);
+			bola.rotateZ(0.05f);
+			
+			if(mode == 0)
+			{
+				torre.setVisibility(false);
+			}
+			else if(mode == 1)
+			{
+				torre.setVisibility(false);
+			}
+			else if(mode==2)
+			{
+				bola.setVisibility(false);
+			}
+			else
+			{
+				piso.setVisibility(false);
+			}
+			
+			plano.setVisibility(true);
+			plane.setVisibility(false);
+			gaviota.setVisibility(false);
+			dummy.setVisibility(false);
+			bola.setVisibility(false);
+			torre.setVisibility(false);
+			
+			fb.setRenderTarget(TextureManager.getInstance().getTextureID("texMapeo"));
+			fb.clear(RGBColor.WHITE);
+			world.renderScene(fb);
+			world.draw(fb);
+			fb.display();
+			
+			if(mode == 0)
+			{
+				torre.setVisibility(true);
+			}
+			else if(mode == 1)
+			{
+				torre.setVisibility(true);
+			}
+			else if(mode==2)
+			{
+				bola.setVisibility(true);
+			}
+			else
+			{
+				piso.setVisibility(true);
+			}
+			
+			plane.setVisibility(true);
+			plano.setVisibility(false);
+			
+			fb.removeRenderTarget();
+			
+			world.renderScene(fb);
+			world.draw(fb);
+			fb.display();
 		}
-
+		else {
+			if(mMediaPlayer.isPlaying())
+				mMediaPlayer.pause();
+		}
 	}
 
 	public float getXpos() {
@@ -394,13 +590,35 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 	}
 
 	public void touch() {
-		invert = !invert;
-		//
-		// for(int i=0;i<barco.length;i++){
-		// barco[i].setVisibility(invert);
-		// }
-		// for(int i=0;i<torre.length;i++){
-		// torre[i].setVisibility(!invert);
-		// }
+		switch (mode) {
+		case 0:
+			mode = 1;
+			torre.setVisibility(true);
+			bola.setVisibility(false);
+			piso.setVisibility(false);
+			break;
+		case 1:
+			mode = 2;
+
+			torre.setVisibility(false);
+			bola.setVisibility(true);
+			piso.setVisibility(false);
+			break;
+		case 2:
+			mode = 3;			
+			torre.setVisibility(false);
+			bola.setVisibility(false);
+			piso.setVisibility(true);
+			break;
+		case 3:
+			mode = 0;
+			break;
+
+
+		}
+	}
+
+	public void updateRendering(int mScreenWidth, int mScreenHeight) {
+		mARHandler.updateRendering(mScreenWidth, mScreenHeight);
 	}
 }

@@ -64,6 +64,7 @@ public class QCARSampleGLView extends GLSurfaceView {
 	private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
 		private static int	EGL_CONTEXT_CLIENT_VERSION	= 0x3098;
 
+		@Override
 		public EGLContext createContext(EGL10 egl, EGLDisplay display, EGLConfig eglConfig) {
 			EGLContext context;
 			if (mUseOpenGLES2) {
@@ -82,6 +83,7 @@ public class QCARSampleGLView extends GLSurfaceView {
 			return context;
 		}
 
+		@Override
 		public void destroyContext(EGL10 egl, EGLDisplay display, EGLContext context) {
 			egl.eglDestroyContext(display, context);
 		}
@@ -123,6 +125,7 @@ public class QCARSampleGLView extends GLSurfaceView {
 			return chooseConfig(egl, display, configs);
 		}
 
+		@Override
 		public EGLConfig chooseConfig(EGL10 egl, EGLDisplay display) {
 			if (mUseOpenGLES2) {
 				// This EGL config specification is used to specify 2.0

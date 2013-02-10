@@ -16,8 +16,16 @@ varying vec3 fogVertexColor;
 const vec4 WHITE = vec4(1,1,1,1);
 
 void main() {
-	vec4 col = texture2D(textureUnit0, texCoord[0]) * vertexColor;
+	vec2 texcoord2;
+	texcoord2.x = gl_FragCoord.x/1196.;
+	texcoord2.y = gl_FragCoord.y/897.;
 	
+	vec4 col = texture2D(textureUnit1, texCoord[0]) * vertexColor;
+	vec4 map = texture2D(textureUnit0, texcoord2);
+	if(map.r > 0.5)
+	{
+		discard;
+	}	
 	if (textureCount>1) {
 	
 		// Can't index texture samplers and switch doesn't seem to compile(?)...end result:
@@ -73,8 +81,7 @@ void main() {
 		col.xyz = (1.0-fogWeight) * col.xyz + fogVertexColor;
 	}
 	
-	//gl_FragColor=col;
-	//gl_FragColor = vec4(0.,0.,0.,1.0);
+	gl_FragColor=col;
 }
 
 

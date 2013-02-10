@@ -32,27 +32,28 @@ obj/local/armeabi/objs/ImageTargets/ImageTargets.o: jni/ImageTargets.cpp \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2platform.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/KHR/khrplatform.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2ext.h \
- jni/../../../build/include/QCAR/QCAR.h \
- jni/../../../build/include/QCAR/System.h \
- jni/../../../build/include/QCAR/CameraDevice.h \
- jni/../../../build/include/QCAR/NonCopyable.h \
- jni/../../../build/include/QCAR/VideoMode.h \
- jni/../../../build/include/QCAR/CameraCalibration.h \
- jni/../../../build/include/QCAR/Vectors.h \
- jni/../../../build/include/QCAR/Renderer.h \
- jni/../../../build/include/QCAR/Matrices.h \
- jni/../../../build/include/QCAR/State.h \
- jni/../../../build/include/QCAR/Frame.h \
- jni/../../../build/include/QCAR/VideoBackgroundConfig.h \
- jni/../../../build/include/QCAR/Trackable.h \
- jni/../../../build/include/QCAR/TrackableResult.h \
- jni/../../../build/include/QCAR/Tool.h \
- jni/../../../build/include/QCAR/Tracker.h \
- jni/../../../build/include/QCAR/TrackerManager.h \
- jni/../../../build/include/QCAR/ImageTracker.h \
- jni/../../../build/include/QCAR/UpdateCallback.h \
- jni/../../../build/include/QCAR/DataSet.h jni/SampleUtils.h \
- jni/Texture.h jni/CubeShaders.h jni/Teapot.h
+ jni/../../../../Android/Vuforia/build/include/QCAR/QCAR.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/System.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/CameraDevice.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/NonCopyable.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/VideoMode.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/CameraCalibration.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Vectors.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Renderer.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Matrices.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/State.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Frame.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/VideoBackgroundConfig.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Trackable.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/TrackableResult.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Tool.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/Tracker.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/TrackerManager.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/ImageTracker.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/UpdateCallback.h \
+ jni/../../../../Android/Vuforia/build/include/QCAR/DataSet.h \
+ jni/SampleUtils.h jni/Texture.h jni/CubeShaders.h jni/Teapot.h \
+ jni/SampleMath.h
 
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/jni.h:
 
@@ -120,45 +121,45 @@ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/KHR/khrpla
 
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2ext.h:
 
-jni/../../../build/include/QCAR/QCAR.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/QCAR.h:
 
-jni/../../../build/include/QCAR/System.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/System.h:
 
-jni/../../../build/include/QCAR/CameraDevice.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/CameraDevice.h:
 
-jni/../../../build/include/QCAR/NonCopyable.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/NonCopyable.h:
 
-jni/../../../build/include/QCAR/VideoMode.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/VideoMode.h:
 
-jni/../../../build/include/QCAR/CameraCalibration.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/CameraCalibration.h:
 
-jni/../../../build/include/QCAR/Vectors.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Vectors.h:
 
-jni/../../../build/include/QCAR/Renderer.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Renderer.h:
 
-jni/../../../build/include/QCAR/Matrices.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Matrices.h:
 
-jni/../../../build/include/QCAR/State.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/State.h:
 
-jni/../../../build/include/QCAR/Frame.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Frame.h:
 
-jni/../../../build/include/QCAR/VideoBackgroundConfig.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/VideoBackgroundConfig.h:
 
-jni/../../../build/include/QCAR/Trackable.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Trackable.h:
 
-jni/../../../build/include/QCAR/TrackableResult.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/TrackableResult.h:
 
-jni/../../../build/include/QCAR/Tool.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Tool.h:
 
-jni/../../../build/include/QCAR/Tracker.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/Tracker.h:
 
-jni/../../../build/include/QCAR/TrackerManager.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/TrackerManager.h:
 
-jni/../../../build/include/QCAR/ImageTracker.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/ImageTracker.h:
 
-jni/../../../build/include/QCAR/UpdateCallback.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/UpdateCallback.h:
 
-jni/../../../build/include/QCAR/DataSet.h:
+jni/../../../../Android/Vuforia/build/include/QCAR/DataSet.h:
 
 jni/SampleUtils.h:
 
@@ -167,3 +168,5 @@ jni/Texture.h:
 jni/CubeShaders.h:
 
 jni/Teapot.h:
+
+jni/SampleMath.h:
