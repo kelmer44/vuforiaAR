@@ -189,7 +189,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		TextureManager.getInstance().addTexture("texMapeo", texturaMapping);
 		
 		torre = loadTorre();
-		world.addObject(torre);		
+		//world.addObject(torre);		
 		
 		try {
 			bola = Object3D.mergeAll(Loader.loadOBJ(mActivity.getAssets().open("bola.obj"), mActivity.getAssets().open("bola.mtl"), 5.0f));
@@ -232,13 +232,13 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		cube.setOrigin(torre.getTransformedCenter());
 		
 		//world.addObject(cube);
-		Texture grass = new Texture(mActivity.getResources().getDrawable(R.drawable.grass01));
+		Texture grass = new Texture(mActivity.getResources().getDrawable(R.drawable.paisaxe));
 		TextureManager.getInstance().addTexture("herba.jpg", grass);
 		
 		grass.setClamping(false);
 		
-		plane = createPlane(PLANE_WIDTH, PLANE_HEIGHT);
-		//plane = Primitives.getPlane(1, 160);
+		//plane = createPlane(PLANE_WIDTH, PLANE_HEIGHT);
+		plane = Primitives.getPlane(1, 560);
 		plane.setCulling(false);
 		plane.rotateX((float) Math.PI);
 		plane.setSpecularLighting(true);
@@ -249,7 +249,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		plane.strip();
 		plane.build();
 		
-		plane.translate(new SimpleVector(0.0f, -30.f, 0.0f));
+		plane.translate(new SimpleVector(0.0f, -30.f, -50.0f));
 		
 		world.addObject(plane);
 		
