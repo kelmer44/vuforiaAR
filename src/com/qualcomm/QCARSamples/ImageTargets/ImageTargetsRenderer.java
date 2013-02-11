@@ -414,7 +414,33 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 		if (mARHandler.isTracking()) {
 			
+			switch (mode) {
+				case 0:
+					torre.setVisibility(true);
+					gaviota.setVisibility(true);
+					mMediaPlayer.start();
+					bola.setVisibility(false);
+					piso.setVisibility(false);
+					break;
+				case 1:
 
+					torre.setVisibility(false);
+					gaviota.setVisibility(false);
+					mMediaPlayer.stop();
+					bola.setVisibility(true);
+					piso.setVisibility(false);
+					break;
+				case 2:		
+					torre.setVisibility(false);
+					gaviota.setVisibility(false);
+					mMediaPlayer.stop();
+					bola.setVisibility(false);
+					piso.setVisibility(true);
+					break;
+				case 3:
+					break;
+			}
+			
 			updateCamera();
 			mMediaPlayer.start();
 			
@@ -423,15 +449,22 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			gaviota.getRoot().translate(0, 0, (float) (0.5*Math.sin(sinMovement)));
 			dummy.rotateZ(0.05f);
 			bola.rotateZ(0.05f);
-			
-			world.renderScene(fb);
-			world.draw(fb);
-			fb.display();
 		}
 		else {
 			if(mMediaPlayer.isPlaying())
 				mMediaPlayer.pause();
+			
+			torre.setVisibility(false);
+			gaviota.setVisibility(false);
+			bola.setVisibility(false);
+			piso.setVisibility(false);
 		}
+		
+
+		
+		world.renderScene(fb);
+		world.draw(fb);
+		fb.display();
 	}
 
 	public float getXpos() {
@@ -470,28 +503,12 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		switch (mode) {
 		case 0:
 			mode = 1;
-			torre.setVisibility(true);
-			gaviota.setVisibility(true);
-			mMediaPlayer.start();
-			bola.setVisibility(false);
-			piso.setVisibility(false);
 			break;
 		case 1:
 			mode = 2;
-
-			torre.setVisibility(false);
-			gaviota.setVisibility(false);
-			mMediaPlayer.stop();
-			bola.setVisibility(true);
-			piso.setVisibility(false);
 			break;
 		case 2:
 			mode = 3;			
-			torre.setVisibility(false);
-			gaviota.setVisibility(false);
-			mMediaPlayer.stop();
-			bola.setVisibility(false);
-			piso.setVisibility(true);
 			break;
 		case 3:
 			mode = 0;

@@ -2,7 +2,6 @@ package com.qualcomm.QCARSamples.ImageTargets;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-import java.util.Vector;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,7 +9,6 @@ import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,11 +21,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.qualcomm.QCAR.QCAR;
-import com.threed.jpct.Logger;
 
 public class ImageTargets extends Activity implements OnClickListener {
 	// Focus mode constants:
@@ -93,19 +91,7 @@ public class ImageTargets extends Activity implements OnClickListener {
 	private Handler					loadingDialogHandler			= new LoadingDialogHandler(this);
 	private int						camWidth;
 	private int						camHeight;
-	private RelativeLayout	mButtonLayout;
-	private Button	buttonMoveLeft;
-	private Button	buttonMoveRight;
-	private Button	buttonMoveDown;
-	private Button	buttonMoveUp;
-	private Button	buttonMoveForward;
-	private Button	buttonMoveBack;
-	private Button	buttonTurnXmore;
-	private Button	buttonTurnYmore;
-	private Button	buttonTurnYless;
-	private Button	buttonScaleMin;
-	private Button	buttonScalPlus;
-	private Button	buttonTurnXless;
+	private ImageView	splashImage;
 
 	/** Static initializer block to load native libraries on start-up. */
 	static {
@@ -138,9 +124,11 @@ public class ImageTargets extends Activity implements OnClickListener {
 
 			if (msg.what == SHOW_LOADING_DIALOG) {
 				imageTargets.mLoadingDialogContainer.setVisibility(View.VISIBLE);
+				imageTargets.splashImage.setVisibility(View.VISIBLE);
 
 			} else if (msg.what == HIDE_LOADING_DIALOG) {
 				imageTargets.mLoadingDialogContainer.setVisibility(View.GONE);
+				imageTargets.splashImage.setVisibility(View.GONE);
 			}
 		}
 	}
@@ -196,7 +184,6 @@ public class ImageTargets extends Activity implements OnClickListener {
 
 				dialogError.setButton(DialogInterface.BUTTON_POSITIVE, "Close", new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						// Exiting application:
 						System.exit(1);
 					}
 				});
@@ -276,6 +263,27 @@ public class ImageTargets extends Activity implements OnClickListener {
 		DebugLog.LOGD("ImageTargets::onCreate");
 		super.onCreate(savedInstanceState);
 
+
+		LayoutInflater inflater = LayoutInflater.from(this);
+		mUILayout = (RelativeLayout) inflater.inflate(R.layout.camera_overlay, null, false);
+
+
+		mUILayout.setVisibility(View.VISIBLE);
+		mUILayout.setBackgroundColor(Color.BLACK);
+
+		// Gets a reference to the loading dialog
+		mLoadingDialogContainer = mUILayout.findViewById(R.id.loading_indicator);
+		
+		((ProgressBar) mLoadingDialogContainer).animate();
+		splashImage = (ImageView) mUILayout.findViewById(R.id.imageView1);
+		
+		
+		// Shows the loading indicator at start
+		loadingDialogHandler.sendEmptyMessage(SHOW_LOADING_DIALOG);
+
+		// Adds the inflated layout to the view
+		addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+		
 		// Query the QCAR initialization flags:
 		mQCARFlags = getInitializationFlags();
 
@@ -643,6 +651,8 @@ public class ImageTargets extends Activity implements OnClickListener {
 		// mGlView.setRenderer(mRenderer);
 		// setContentView(mGlView);
 
+		
+		
 		// Do application initialization in native code (e.g. registering
 		// callbacks, etc.):
 		initApplicationNative(mScreenWidth, mScreenHeight);
@@ -661,39 +671,6 @@ public class ImageTargets extends Activity implements OnClickListener {
 		mRenderer = new ImageTargetsRenderer(this);
 		mGlView.setRenderer(mRenderer);
 		// setContentView(mGlView);
-		LayoutInflater inflater = LayoutInflater.from(this);
-		mUILayout = (RelativeLayout) inflater.inflate(R.layout.camera_overlay, null, false);
-
-		mButtonLayout = (RelativeLayout) inflater.inflate(R.layout.uilayout, null, false);
-		
-		
-		buttonMoveLeft = (Button) mButtonLayout.findViewById(R.id.moveleft );
-		buttonMoveLeft.setOnClickListener(this);
-		buttonMoveRight = (Button) mButtonLayout.findViewById(R.id.moveright );
-		buttonMoveUp = (Button) mButtonLayout.findViewById(R.id.moveup );
-		buttonMoveDown = (Button) mButtonLayout.findViewById(R.id.movedn );
-		buttonMoveBack = (Button) mButtonLayout.findViewById(R.id.moveback );
-		buttonMoveForward = (Button) mButtonLayout.findViewById(R.id.movefw );
-		buttonTurnXmore = (Button) mButtonLayout.findViewById(R.id.turnxplus );
-		buttonTurnYmore = (Button) mButtonLayout.findViewById(R.id.turnyplus );
-		buttonTurnYless = (Button) mButtonLayout.findViewById(R.id.turnymin );
-		buttonScaleMin = (Button) mButtonLayout.findViewById(R.id.scalemin );
-		buttonScalPlus = (Button) mButtonLayout.findViewById(R.id.scaleplus );
-		buttonTurnXless = (Button) mButtonLayout.findViewById(R.id.turnxmin);
-		
-		
-		
-		
-		mUILayout.setVisibility(View.VISIBLE);
-		mUILayout.setBackgroundColor(Color.BLACK);
-
-		// Gets a reference to the loading dialog
-		mLoadingDialogContainer = mUILayout.findViewById(R.id.loading_indicator);
-		// Shows the loading indicator at start
-		loadingDialogHandler.sendEmptyMessage(SHOW_LOADING_DIALOG);
-
-		// Adds the inflated layout to the view
-		addContentView(mUILayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 
 	}
 
@@ -757,6 +734,11 @@ public class ImageTargets extends Activity implements OnClickListener {
 	public void onClick(View v) {
 	
 		
+	}
+
+	public void removeSplash() {
+		// TODO Auto-generated method stub
+		splashImage.setVisibility(View.GONE);
 	}
 
 }
