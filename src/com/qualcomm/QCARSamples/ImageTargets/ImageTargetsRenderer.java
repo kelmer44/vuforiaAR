@@ -413,9 +413,10 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 
 		if (mARHandler.isTracking()) {
-			
+
 			switch (mode) {
 				case 0:
+					plane.setVisibility(true);
 					torre.setVisibility(true);
 					gaviota.setVisibility(true);
 					mMediaPlayer.start();
@@ -424,6 +425,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 					break;
 				case 1:
 
+					plane.setVisibility(true);
 					torre.setVisibility(false);
 					gaviota.setVisibility(false);
 					mMediaPlayer.stop();
@@ -436,6 +438,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 					mMediaPlayer.stop();
 					bola.setVisibility(false);
 					piso.setVisibility(true);
+					plane.setVisibility(false);
 					break;
 				case 3:
 					break;
@@ -458,6 +461,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 			gaviota.setVisibility(false);
 			bola.setVisibility(false);
 			piso.setVisibility(false);
+			plane.setVisibility(false);
 		}
 		
 

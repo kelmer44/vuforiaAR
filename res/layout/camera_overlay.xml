@@ -19,6 +19,6 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="false"
-            android:paddingBottom="50dp" />
+            android:paddingBottom="250dp" />
 
 </RelativeLayout>
