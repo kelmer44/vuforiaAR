@@ -68,7 +68,7 @@ public class ImageTargets extends Activity implements OnClickListener {
 	// QCAR initialization flags:
 	private int						mQCARFlags						= 0;
 
-	private GLSurfaceView			mGlView;
+	private QCARSampleGLView			mGlView;
 	private ImageTargetsRenderer	mRenderer						= null;
 
 	// Display size of the device:
@@ -662,11 +662,11 @@ public class ImageTargets extends Activity implements OnClickListener {
 		int stencilSize = 0;
 		boolean translucent = QCAR.requiresAlpha();
 
-		// mGlView = new QCARSampleGLView(this);
-		mGlView = new GLSurfaceView(this.getApplication());
-		// mGlView.init(mQCARFlags, translucent, depthSize, stencilSize);
-		mGlView.setEGLContextClientVersion(2);
-		mGlView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
+		 mGlView = new QCARSampleGLView(this);
+		//mGlView = new GLSurfaceView(this.getApplication());
+		 mGlView.init(mQCARFlags, translucent, depthSize, stencilSize);
+		//mGlView.setEGLContextClientVersion(2);
+		//mGlView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 
 		mRenderer = new ImageTargetsRenderer(this);
 		mGlView.setRenderer(mRenderer);
