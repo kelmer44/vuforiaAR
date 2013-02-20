@@ -167,8 +167,8 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 		if (fb != null) {
 			fb.dispose();
 		}
-		fb = new FrameBuffer(gl, 1196,897);
-		//fb = new FrameBuffer(1196, 897);
+		// fb = new FrameBuffer(gl, width,height);
+		fb = new FrameBuffer(1196, 897);
 
 		mARHandler.onSurfaceChanged(gl, width, height);
 	}

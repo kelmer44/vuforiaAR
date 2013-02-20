@@ -44,7 +44,7 @@ LOCAL_MODULE := ImageTargets
 # The variable USE_OPENGL_ES_1_1 determines the OpenGL ES API version
 # to use. If set to true, OpenGL ES 1.1 is used, otherwise OpenGL ES 2.0.
 
-USE_OPENGL_ES_1_1 := true
+USE_OPENGL_ES_1_1 := false
 
 # Set OpenGL ES version-specific settings.
 
