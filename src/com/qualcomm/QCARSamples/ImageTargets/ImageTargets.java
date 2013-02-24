@@ -274,7 +274,7 @@ public class ImageTargets extends Activity implements OnClickListener {
 		// Gets a reference to the loading dialog
 		mLoadingDialogContainer = mUILayout.findViewById(R.id.loading_indicator);
 		
-		((ProgressBar) mLoadingDialogContainer).animate();
+		//((ProgressBar) mLoadingDialogContainer).animate();
 		splashImage = (ImageView) mUILayout.findViewById(R.id.imageView1);
 		
 		

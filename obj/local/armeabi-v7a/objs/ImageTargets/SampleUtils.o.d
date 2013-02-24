@@ -31,10 +31,10 @@ obj/local/armeabi-v7a/objs/ImageTargets/SampleUtils.o: \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/alloca.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/strings.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/memory.h \
- C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES/gl.h \
- C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES/glplatform.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2.h \
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2platform.h \
  C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/KHR/khrplatform.h \
- C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES/glext.h
+ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2ext.h
 
 jni/SampleUtils.h:
 
@@ -100,10 +100,10 @@ C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/strings.h:
 
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/memory.h:
 
-C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES/gl.h:
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2.h:
 
-C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES/glplatform.h:
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2platform.h:
 
 C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/KHR/khrplatform.h:
 
-C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES/glext.h:
+C:/Desarrollo/android-ndk-r8/platforms/android-8/arch-arm/usr/include/GLES2/gl2ext.h:
