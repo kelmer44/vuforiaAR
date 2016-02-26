@@ -303,7 +303,7 @@ JNIEXPORT void JNICALL Java_com_qualcomm_QCARSamples_ImageTargets_QCARFrameHandl
 	jfloatArray projectionArray = env->NewFloatArray(16);
 
 	// Clear color and depth buffer
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Get the state from QCAR and mark the beginning of a rendering section
 	QCAR::State state = QCAR::Renderer::getInstance().begin();

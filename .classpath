@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry exported="true" kind="var" path="QCAR_SDK_ROOT/build/java/QCAR/QCAR.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="lib" path="C:/Desarrollo/Android/jpct-ae/lib/jpct_ae.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/C:/Desarrollo/Android/jpct-ae/doc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Bones"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/Bones"/>
+	<classpathentry exported="true" kind="lib" path="C:/Desarrollo/Android/QCAR.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

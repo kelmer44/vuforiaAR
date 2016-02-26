@@ -124,7 +124,7 @@ public class ImageTargetsRenderer implements GLSurfaceView.Renderer {
 
 	private void initScene() {
 		world = new World();
-		world.setClippingPlanes(2f, 2500f);
+		world.setClippingPlanes(-100f, 500f);
 		world.setAmbientLight(50, 50, 50);
 		
 		loadObjects();
