@@ -6,9 +6,7 @@ This README would normally document whatever steps are necessary to get your app
 
 * AR demos with Vuforia.
 
-Check 
+### Demos ### 
 
  * https://www.youtube.com/watch?v=JFVMqcukj5g
  * https://www.youtube.com/watch?v=p2Fq6uqiMao
-
-for demos.
